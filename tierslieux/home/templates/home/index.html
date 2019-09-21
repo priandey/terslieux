@@ -11,9 +11,13 @@
     </p>
     <p>Locations list : <br>
         {% for loc in locations %}
-        Nom :      {{ loc.name }} <br>
-        Description : {{ loc.description }} <br>
-        Moderator : {{ loc.moderator.user.email }}
+            Nom :      {{ loc.name }} <br>
+            Description : {{ loc.description }} <br>
+            Moderator : {{ loc.moderator.user.email }} <br>
+            {% for status in loc.status.all %}
+                &emsp; Status : {{ status.activity }} <br>
+                &emsp; Last Open Date : {{ status.open_date }} <br><br>
+            {% endfor %}
         {% endfor %}
     </p>
 </head>

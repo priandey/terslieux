@@ -54,7 +54,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 class Volunteer(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE) #TODO : Implement volunteer
 
 class Moderator(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
