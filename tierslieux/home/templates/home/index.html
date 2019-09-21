@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My first page</title>
+    <h1>Enjoy your front page</h1>
+    <p>Moderators list : <br>
+        {% for mod in moderators %}
+             - {{ mod.user.email }}<br>
+        {% endfor %}
+    </p>
+    <p>Locations list : <br>
+        {% for loc in locations %}
+        Nom :      {{ loc.name }} <br>
+        Description : {{ loc.description }} <br>
+        Moderator : {{ loc.moderator.user.email }}
+        {% endfor %}
+    </p>
+</head>
+<body>
+
+</body>
+</html>

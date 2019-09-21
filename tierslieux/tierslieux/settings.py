@@ -31,12 +31,15 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'favorite',
+    'home',
+    'location',
+    'user',
 ]
 
 MIDDLEWARE = [
@@ -69,6 +72,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'tierslieux.wsgi.application'
 
+AUTH_USER_MODEL = "user.CustomUser"
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
