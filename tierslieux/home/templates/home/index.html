@@ -4,12 +4,22 @@
     <meta charset="UTF-8">
     <title>My first page</title>
     <h1>Enjoy your front page</h1>
-    <p>Moderators list : <br>
+    <p><b>Members list :</b> <br>
+        {% for member in members %}
+             - {{ member.email }}<br>
+        {% endfor %}
+    </p>
+    <p><b>Volunteers list :</b> <br>
+        {% for volunteer in volunteers %}
+             - {{ volunteer.user.email }}<br>
+        {% endfor %}
+    </p>
+    <p><b>Moderators list :</b> <br>
         {% for mod in moderators %}
              - {{ mod.user.email }}<br>
         {% endfor %}
     </p>
-    <p>Locations list : <br>
+    <p><b>Locations list :</b> <br>
         {% for loc in locations %}
             Nom :      {{ loc.name }} <br>
             Description : {{ loc.description }} <br>
