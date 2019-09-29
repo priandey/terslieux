@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.text import slugify
 
 from user.models import Volunteer, Moderator
 
@@ -8,9 +9,12 @@ class Location(models.Model):
     description = models.TextField()
     volunteers = models.ManyToManyField(Volunteer, related_name="volunteers")
     moderator = models.ForeignKey(Moderator, on_delete=models.CASCADE)
-    #TODO : Slug du lieu (Fonction Slugify)
+    slug = models.CharField(max_length=255, unique=True)
 
-class Status(models.Modetel):
+    def slugify(self):
+        return self.name.slugify
+
+class Status(models.Model):
     activity = models.CharField(max_length=255, default="Ouvert")
     open_date = models.DateTimeField(auto_now_add=True)
     close_date = models.DateTimeField(null=True) #TODO : Add function to edit this field when closing location

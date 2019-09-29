@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ location.name }}</title>
+</head>
+<body>
+    <p>Nom : {{ location.name }}</p>
+    <p>Description : {{ location.description }}</p>
+    <p>Modérateur : {{ location.moderator.user.email }}</p>
+    <p>Bénévoles : {% for volunteer in location.volunteers.all %}<br />
+            {{ volunteer.user.email }}
+        {% endfor %}
+    </p>
+    <p>slug : {{ location.slug }}</p>
+
+</body>
+</html>

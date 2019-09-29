@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <title>My first page</title>
@@ -24,6 +24,7 @@
             Nom :      {{ loc.name }} <br>
             Description : {{ loc.description }} <br>
             Moderator : {{ loc.moderator.user.email }} <br>
+            slug : {{ loc.slug }} <br>
             {% for status in loc.status.all %}
                 &emsp; Status : {{ status.activity }} <br>
                 &emsp; Last Open Date : {{ status.open_date }} <br><br>
