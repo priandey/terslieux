@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils.text import slugify
 
 from user.models import Volunteer, Moderator
 
@@ -9,10 +8,11 @@ class Location(models.Model):
     description = models.TextField()
     volunteers = models.ManyToManyField(Volunteer, related_name="volunteers")
     moderator = models.ForeignKey(Moderator, on_delete=models.CASCADE)
-    slug = models.CharField(max_length=255, unique=True)
+    slug = models.SlugField()
 
-    def slugify(self):
-        return self.name.slugify
+#TODO : Association table => is_active / request
+#TODO : modèle request (sender/receiver) + date
+#TODO : Renseigner sur les token
 
 class Status(models.Model):
     activity = models.CharField(max_length=255, default="Ouvert")

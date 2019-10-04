@@ -41,8 +41,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         verbose_name=_('date_joined'), auto_now_add=True)
     is_active = models.BooleanField(verbose_name=_('active'), default=True)
     is_staff = models.BooleanField(verbose_name=_('admin'), default=False)
-    is_moderator = models.BooleanField(verbose_name=_('moderator'), default=False)
-    is_volunteer = models.BooleanField(verbose_name=_('volunteer'), default=False)
 
     objects = UserManager()
 
@@ -54,7 +52,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 class Volunteer(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE) #TODO : Implement volunteer
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
 class Moderator(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, unique=True)
