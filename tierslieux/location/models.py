@@ -6,8 +6,8 @@ from user.models import Volunteer, Moderator
 class Location(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
-    volunteers = models.ManyToManyField(Volunteer, related_name="volunteers")
-    moderator = models.ForeignKey(Moderator, on_delete=models.CASCADE)
+    volunteers = models.ManyToManyField(Volunteer, through='VolunteerBase', related_name="volunteers")
+    moderator = models.ForeignKey(Moderator, on_delete=models.CASCADE, related_name="location")
     slug = models.SlugField()
 
 #TODO : Association table => is_active / request
@@ -23,3 +23,8 @@ class Status(models.Model):
 
     def __repr__(self):
         return f'{self.activity} at {self.open_date}'
+
+class VolunteerBase(models.Model):
+    volunteer = models.ForeignKey(Volunteer, on_delete=models.CASCADE)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE)
+    is_active = models.BooleanField(default=True)

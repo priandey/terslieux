@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'home',
     'location',
     'user',
+    'moderator',
 ]
 
 MIDDLEWARE = [

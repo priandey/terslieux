@@ -55,4 +55,4 @@ class Volunteer(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
 class Moderator(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, unique=True)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, unique=True, related_name="mod")
