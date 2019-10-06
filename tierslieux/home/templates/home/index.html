@@ -34,6 +34,7 @@
             Description : {{ loc.description }} <br>
             Moderator : {{ loc.moderator.user.email }} <br>
             slug : {{ loc.slug }} <br>
+            <a href="{% url 'location' loc.slug %}"> Plus de détails </a> <br>
             {% for status in loc.status.all %}
                 &emsp; Status : {{ status.activity }} <br>
                 &emsp; Last Open Date : {{ status.open_date }} <br>

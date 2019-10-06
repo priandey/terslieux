@@ -3,13 +3,25 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.db.utils import IntegrityError
 
-from user.models import Moderator, CustomUser
+from user.models import Moderator, CustomUser, Volunteer
 
-from .models import Location
+from .models import Location, VolunteerBase
 from .forms import LocationForm
 
 def location_detail(request, slug):
     location = Location.objects.get(slug=slug)
+    if request.user.is_authenticated:
+        user = request.user
+        try :
+            volunteer = Volunteer.objects.filter(user=user)
+            for entry in VolunteerBase.objects.filter(location=location):
+                if volunteer == entry.volunteer:
+                    disclaimer = "Vous êtes bénévole sur ce lieu"
+                else :
+                    pass
+        except user.models.Volunteer.DoesNotExist:
+            pass
+
     return render(request, 'location/location_detail.html', locals())
 
 
@@ -29,6 +41,11 @@ def location_creation(request):
     else:
         form = LocationForm()
     return render(request, 'location/location_creation.html', locals())
+
+@login_required(login_url='/user/login/')
+def require_volunteering(request):
+    if request.method == 'POST':
+
 
 #TODO : location_edition view for moderator
 #TODO : requesting to be volunteer upon a location for members

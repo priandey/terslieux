@@ -8,11 +8,27 @@
     <p>Nom : {{ location.name }}</p>
     <p>Description : {{ location.description }}</p>
     <p>Modérateur : {{ location.moderator.user.email }}</p>
-    <p>Bénévoles : {% for volunteer in location.volunteers.all %}<br />
-            {{ volunteer.user.email }}
+    <p>Bénévoles : {% for entry in location.volunteerbase_set.all %}<br />
+            {{ entry.volunteer.user.email }}
+            {% if entry.pending_request %}
+        <b>Demande de confirmation</b>
+            {% endif %}
         {% endfor %}
     </p>
+    <p>
+        {% if disclaimer %}
+            {{ disclaimer }}
+        {% endif %}
+    </p>
     <p>slug : {{ location.slug }}</p>
+    {% if user.is_authenticated %}
+    <form method="post" action="{% url 'require_volunteering' %}">
+        {% csrf_token %}
+        <input type="text" id="comment"/>
+        <input type="hidden" value="{{ location.slug }}" id="location"/>
+        <input type="submit" value="Demander à être bénévole" />
+    </form>
+    {% endif %}
 
 </body>
 </html>

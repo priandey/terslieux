@@ -7,7 +7,7 @@
 <body>
     {% for location in locations %}
         <p> {{ location.name }} </p>
-        <a> <!-- TODO : Add clickable place link --> </a>
+        <a href="{% url 'location' location.slug %}"> Fiche détaillée </a>
     {% endfor %}
 </body>
 </html>

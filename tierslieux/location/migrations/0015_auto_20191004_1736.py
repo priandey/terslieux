@@ -24,7 +24,11 @@ class Migration(migrations.Migration):
             name='moderator',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='location', to='user.Moderator'),
         ),
-        migrations.AlterField(
+        migrations.RemoveField(
+          model_name='location',
+          name='volunteers'
+        ),
+        migrations.AddField(
             model_name='location',
             name='volunteers',
             field=models.ManyToManyField(related_name='volunteers', through='location.VolunteerBase', to='user.Volunteer'),

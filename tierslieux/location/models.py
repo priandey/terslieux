@@ -1,6 +1,6 @@
 from django.db import models
 
-from user.models import Volunteer, Moderator
+from user.models import Volunteer, Moderator, CustomUser
 
 
 class Location(models.Model):
@@ -24,7 +24,14 @@ class Status(models.Model):
     def __repr__(self):
         return f'{self.activity} at {self.open_date}'
 
+class VolunteeringRequest(models.Model):
+    sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="request_sent")
+    receiver = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="request_received")
+    comment = models.CharField(max_length=255, null=True, default="Je souhaiterais être bénévole pour votre association")
+    date = models.DateTimeField(auto_now_add=True)
+
 class VolunteerBase(models.Model):
     volunteer = models.ForeignKey(Volunteer, on_delete=models.CASCADE)
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
+    volunteering_request = models.ForeignKey(VolunteeringRequest, on_delete=models.CASCADE, related_name="volunteer_base")
