@@ -31,7 +31,7 @@ class VolunteeringRequest(models.Model):
     validated = models.BooleanField(default=False)
     date = models.DateTimeField(auto_now_add=True)
 
-class VolunteerBase(models.Model):
+class VolunteerBase(models.Model): #TODO : Change VolunteerBase into Volunteer and field volunteer to user
     volunteer = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=False)

@@ -1,7 +1,7 @@
 from django.shortcuts import render
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, HttpResponseRedirect
 
-from location.models import Location, VolunteerBase
+from location.models import Location, VolunteerBase, VolunteeringRequest
 
 def moderator_pannel(request):
     locations = Location.objects.filter(moderator=request.user)
@@ -22,3 +22,13 @@ def volunteers(request, slug):
     else:
         response = HttpResponseForbidden()
     return response
+
+def change_vol_status(request, slug, req_pk, status):
+    location = Location.objects.get(slug=slug)
+    if location.moderator == request.user:
+        if status == "validated":
+            req = VolunteeringRequest.objects.get(pk=req_pk)
+            req.validated = True
+            req.save()
+
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))

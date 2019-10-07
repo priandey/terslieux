@@ -22,7 +22,7 @@
         {% for loc in locations %}
             <div style="border:2px solid black">Nom :      {{ loc.name }} <br>
             Description : {{ loc.description }} <br>
-            Moderator : {{ loc.moderator.user.email }} <br>
+            Moderator : {{ loc.moderator.email }} <br>
             slug : {{ loc.slug }} <br>
             <a href="{% url 'location' loc.slug %}"> Plus de détails </a> <br>
             {% for status in loc.status.all %}

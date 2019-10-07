@@ -7,7 +7,7 @@
 <body>
     {% for location in locations %}
         <p> {{ location.name }} </p>
-        <a href="{% url 'location' location.slug %}"> Fiche détaillée </a>
+        <a href="{% url 'volunteers_pannel' location.slug %}"> Interface de modération </a>
     {% endfor %}
 </body>
 </html>

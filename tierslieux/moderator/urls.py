@@ -19,4 +19,6 @@ from . import views
 
 urlpatterns = [
     path('', views.moderator_pannel, name='moderator_pannel'),
+    path('<slug:slug>/', views.volunteers, name='volunteers_pannel'),
+    path('<slug:slug>/<int:req_pk>/<str:status>', views.change_vol_status, name='validate'),
 ]
