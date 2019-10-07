@@ -28,6 +28,7 @@ class VolunteeringRequest(models.Model):
     sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="request_sent")
     receiver = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="request_received")
     comment = models.CharField(max_length=255, null=True, default="Je souhaiterais être bénévole pour votre association")
+    validated = models.BooleanField(default=False)
     date = models.DateTimeField(auto_now_add=True)
 
 class VolunteerBase(models.Model):
