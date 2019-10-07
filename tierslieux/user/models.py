@@ -50,9 +50,3 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
-
-class Volunteer(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-
-class Moderator(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, unique=True, related_name="mod")

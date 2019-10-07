@@ -5,18 +5,19 @@
     <title>{{ location.name }}</title>
 </head>
 <body>
+{% block 'location_detail' %}
     <p>Nom : {{ location.name }}</p>
     <p>Description : {{ location.description }}</p>
-    <p>Modérateur : {{ location.moderator.user.email }}</p>
+    <p>Modérateur : {{ location.moderator.email }}</p>
     <p>Bénévoles : {% for entry in location.volunteerbase_set.all %}<br />
-            {{ entry.volunteer.user.email }}
+            {{ entry.volunteer.email }}
             {% if entry.volunteering_request.validated == False %}
         <b>Demande de confirmation</b>
             {% endif %}
         {% endfor %}
     </p>
     <p>slug : {{ location.slug }}</p>
-    {% if user.is_authenticated %}
+    {% if user.is_authenticated %} <!-- TODO : Remove form if user is the moderator -->
         {% if disclaimer %}
              <b>{{ disclaimer }}</b>
         {% else %}
@@ -29,6 +30,6 @@
     {% endif %}
 
     {% endif %}
-
+{% endblock %}
 </body>
 </html>

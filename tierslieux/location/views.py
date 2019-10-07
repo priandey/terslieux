@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.db.utils import IntegrityError
 
-from user.models import Moderator, CustomUser, Volunteer
+from user.models import CustomUser
 
 from .models import Location, VolunteerBase, VolunteeringRequest
 from .forms import LocationForm
@@ -13,9 +13,8 @@ def location_detail(request, slug):
     if request.user.is_authenticated:
         user = request.user
         try:
-            volunteer = Volunteer.objects.get(user=user)
             for entry in VolunteerBase.objects.filter(location=location):
-                if volunteer == entry.volunteer:
+                if user == entry.volunteer:
                     disclaimer = "Vous êtes bénévole sur ce lieu"
                 else:
                     pass
@@ -31,11 +30,7 @@ def location_creation(request):
         form = LocationForm(request.POST)
         if form.is_valid():
             new_location = form.save(commit=False)
-            try:
-                moderator = Moderator.objects.create(user=CustomUser.objects.get(pk=request.user.pk))
-            except IntegrityError:
-                moderator = Moderator.objects.get(user=request.user)
-            new_location.moderator = moderator
+            new_location.moderator = request.user
             new_location.save()
             return HttpResponseRedirect('/')
     else:
@@ -49,21 +44,19 @@ def require_volunteering(request):
         location = Location.objects.get(slug=request.POST['location'])
         comment = request.POST['comment']
         requesting_user = request.user
-        moderator = location.moderator.user
+        moderator = location.moderator
 
-        volunteer = Volunteer.objects.create(user=requesting_user) #Creating a new Volunteer
-
-        request = VolunteeringRequest.objects.create(
+        sent_request = VolunteeringRequest.objects.create(
                 sender=requesting_user,
                 receiver=moderator,
                 comment=comment
         ) #Creating a new request
 
         VolunteerBase.objects.create(
-                volunteer=volunteer,
+                volunteer=requesting_user,
                 location=location,
                 is_active=False,
-                volunteering_request=request
+                volunteering_request=sent_request
         ) #Creating a new entry for the location in the volunteer base
         return redirect('location', slug=location.slug)
 
