@@ -12,12 +12,15 @@ def volunteers(request, slug):
     if location.moderator == request.user:
         volunteers = location.volunteerbase_set.all()
         validated = list()
-        pending = list()
+        required_by_mod = list()
+        required_by_vol = list()
         for volunteer in volunteers:
             if volunteer.volunteering_request.validated:
                 validated.append(volunteer)
+            elif volunteer.volunteering_request.validated == False:
+                required_by_vol.append(volunteer)
             else:
-                pending.append(volunteer)
+                required_by_mod.append(volunteer)
         response = render(request, "moderator/volunteers.html", locals())
     else:
         response = HttpResponseForbidden()
@@ -30,5 +33,8 @@ def change_vol_status(request, slug, req_pk, status):
             req = VolunteeringRequest.objects.get(pk=req_pk)
             req.validated = True
             req.save()
+        elif status == "remove":
+            req = VolunteeringRequest.objects.get(pk=req_pk)
+            req.delete()
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))

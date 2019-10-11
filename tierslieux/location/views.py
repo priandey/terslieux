@@ -61,5 +61,4 @@ def require_volunteering(request):
         return redirect('location', slug=location.slug)
 
 #TODO : location_edition view for moderator
-#TODO : requesting to be volunteer upon a location for members
 #TODO : status_declaration view for volunteer

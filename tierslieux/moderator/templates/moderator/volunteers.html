@@ -47,11 +47,30 @@ tfoot {
             <td><b>Commentaire</b></td>
             <td><b>Valider la requête ?</b></td>
         </tr>
-        {% for volunteer in pending %}
+        {% for volunteer in required_by_vol %}
             <tr>
                 <td>{{ volunteer.volunteer.email}}</td>
                 <td>{{ volunteer.volunteering_request.comment }}</td>
                 <td><a href="{% url 'validate' location.slug volunteer.volunteering_request.pk 'validated' %}">OUI</a></td>
+            </tr>
+        {% endfor %}
+    </tbody>
+    <thead>
+        <tr>
+            <th colspan="3">Invitations</th>
+        </tr>
+    </thead>
+  <tbody>
+        <tr>
+            <td><b>Utilisateur</b></td>
+            <td><b>Date d'invitation</b></td>
+            <td><b>Révoquer l'invitation ?</b></td>
+        </tr>
+        {% for volunteer in required_by_mod %}
+            <tr>
+                <td>{{ volunteer.volunteer.email}}</td>
+                <td>{{ volunteer.volunteering_request.date }}</td>
+                <td><a href="{% url 'validate' location.slug volunteer.volunteering_request.pk 'remove' %}">OUI</a></td>
             </tr>
         {% endfor %}
     </tbody>

@@ -10,8 +10,6 @@ class Location(models.Model):
     moderator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="location")
     slug = models.SlugField()
 
-#TODO : Association table => is_active / request
-#TODO : modèle request (sender/receiver) + date
 #TODO : Renseigner sur les token
 
 class Status(models.Model):
@@ -28,8 +26,11 @@ class VolunteeringRequest(models.Model):
     sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="request_sent")
     receiver = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="request_received")
     comment = models.CharField(max_length=255, null=True, default="Je souhaiterais être bénévole pour votre association")
-    validated = models.BooleanField(default=False)
+    validated = models.BooleanField(null=True)
     date = models.DateTimeField(auto_now_add=True)
+    #TODO: Add Field "location", "token"
+    #TODO : Déterminer le lien du sender vis à vis du lieu
+
 
 class VolunteerBase(models.Model): #TODO : Change VolunteerBase into Volunteer and field volunteer to user
     volunteer = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
