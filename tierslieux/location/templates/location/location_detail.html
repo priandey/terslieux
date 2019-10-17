@@ -11,15 +11,18 @@
     <p>Modérateur : {{ location.moderator.email }}</p>
     <p>Bénévoles : {% for entry in location.volunteerbase_set.all %}<br />
             {{ entry.volunteer.email }}
-            {% if entry.volunteering_request.validated == False %}
+            {% if entry.volunteering_request.validated != True %}
         <b>Demande de confirmation</b>
             {% endif %}
         {% endfor %}
     </p>
     <p>slug : {{ location.slug }}</p>
-    {% if user.is_authenticated %} <!-- TODO : Remove form if user is the moderator -->
+    {% if user.is_authenticated %}
         {% if disclaimer %}
              <b>{{ disclaimer }}</b>
+            {% if location_mod %}
+                <a href="{% url 'volunteers_pannel' location.slug %}">Panneau de modération</a>
+            {% endif %}
         {% else %}
             <form method="POST" action="{% url 'require_volunteering' %}">
                 <input type="text" name="comment"/>

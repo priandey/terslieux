@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Nouvel Utilisateur</title>
+</head>
+<body>
+    <h1>L'adresse que vous avez rentré n'existe pas</h1>
+    <p>Vous pouvez créer un utilisateur, ou bien retourner sur la page de gestion des bénévoles <br />
+        <a href="{% url 'volunteers_pannel' location.slug %}">Retourner à la page de {{ location.name }}</a></p>
+    <h2>Création d'un utilisateur</h2>
+    <p> Notez bien le mot de passe afin de le communiquer, vous ne pourrez pas le récupérer !</p>
+    <form action="{% url 'mod_create_vol' location.slug%}" method="post">
+        <label about="mail">Email</label> <input type="text" name="mail" />
+        <label about="password">Mot de Passe</label> <input type="text" name="password" />
+        {% csrf_token %}
+        <input type="submit" value="Créer un utilisateur">
+    </form>
+
+</body>
+</html>

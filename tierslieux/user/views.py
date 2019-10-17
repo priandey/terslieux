@@ -12,7 +12,6 @@ def sign_in(request):
     '''
 
     form = SigninForm(request.POST or None)
-
     if form.is_valid():
         email = form.cleaned_data['email']
         password = form.cleaned_data['password']

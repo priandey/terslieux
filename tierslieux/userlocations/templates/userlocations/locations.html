@@ -1,0 +1,12 @@
+{% for entry in volunteerbase %}
+    <a href="{% url 'location' entry.location.slug %}"> {{ entry.location.name }} </a>
+    {% if entry.volunteering_request.validated == True %}
+        <b>Vous êtes bénévoles</b>
+    {% elif entry.volunteering_request.validated == False %}
+        <b>Le modérateur n'a pas encore validé votre requête </b>
+    {% else %}
+        <b>Vous avez reçu une requête de bénévolat, l'accepter ?</b>
+        <a href="{% url 'accept_vol' entry.volunteering_request.pk %}">OUI</a>
+    {% endif %}
+
+{% endfor %}

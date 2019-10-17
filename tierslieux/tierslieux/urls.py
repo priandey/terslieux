@@ -19,5 +19,6 @@ urlpatterns = [
     path('', include('home.urls')),
     path('l/', include('location.urls')),
     path('user/', include('user.urls')),
-    path('mod/', include('moderator.urls'))
+    path('mod/', include('moderator.urls')),
+    path('private/', include('userlocations.urls')),
 ]

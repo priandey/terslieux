@@ -1,7 +1,6 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.db.utils import IntegrityError
 
 from user.models import CustomUser
 
@@ -12,14 +11,18 @@ def location_detail(request, slug):
     location = Location.objects.get(slug=slug)
     if request.user.is_authenticated:
         user = request.user
-        try:
-            for entry in VolunteerBase.objects.filter(location=location):
-                if user == entry.volunteer:
+        if user == location.moderator:
+            disclaimer = "Vous êtes modérateurs de ce lieu"
+            location_mod = True
+
+        for entry in VolunteerBase.objects.filter(location=location):
+            if user == entry.volunteer:
+                if entry.volunteering_request.validated:
                     disclaimer = "Vous êtes bénévole sur ce lieu"
                 else:
-                    pass
-        except user.models.Volunteer.DoesNotExist:
-            print("There was an error DoesNotExist")
+                    disclaimer = "Le modérateur de ce lieu vous a proposé d'être bénévole"
+            else:
+                pass
 
     return render(request, 'location/location_detail.html', locals())
 
@@ -40,7 +43,6 @@ def location_creation(request):
 @login_required(login_url='/user/login/')
 def require_volunteering(request):
     if request.method == 'POST':
-        print(request.POST)
         location = Location.objects.get(slug=request.POST['location'])
         comment = request.POST['comment']
         requesting_user = request.user
@@ -49,7 +51,8 @@ def require_volunteering(request):
         sent_request = VolunteeringRequest.objects.create(
                 sender=requesting_user,
                 receiver=moderator,
-                comment=comment
+                comment=comment,
+                validated=False,
         ) #Creating a new request
 
         VolunteerBase.objects.create(

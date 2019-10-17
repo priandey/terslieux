@@ -27,12 +27,14 @@ tfoot {
             <td><b>Utilisateur</b></td>
             <td><b>Date d'arrivée</b></td>
             <td><b>Actif</b></td>
+            <td><b>Supprimer</b></td>
         </tr>
         {% for volunteer in validated %}
             <tr>
                 <td>{{ volunteer.volunteer.email}}</td>
                 <td>{{ volunteer.volunteering_request.date }}</td>
                 <td>{{ volunteer.is_active }}</td>
+                <td><a href="{% url 'validate' location.slug volunteer.volunteering_request.pk 'remove' %}">OUI</a></td>
             </tr>
         {% endfor %}
     </tbody>
@@ -57,7 +59,7 @@ tfoot {
     </tbody>
     <thead>
         <tr>
-            <th colspan="3">Invitations</th>
+            <th colspan="3">Invitations envoyées</th>
         </tr>
     </thead>
   <tbody>
@@ -73,7 +75,22 @@ tfoot {
                 <td><a href="{% url 'validate' location.slug volunteer.volunteering_request.pk 'remove' %}">OUI</a></td>
             </tr>
         {% endfor %}
+
     </tbody>
+        <thead>
+        <tr>
+            <th colspan="3">Nouvelle invitation</th>
+        </tr>
 </table>
+
+    <form action="{% url 'new_vol' location.slug %}" method="post">
+        <label about="email">Email du bénévole</label>
+    <input type="text" name="email"/>
+      {% if no_user %}
+      <input type="text" value="Mot de passe" name="password" />
+      {% endif %}
+      {% csrf_token %}
+    <input type="submit" value="Envoyer la requête" />
+</form>
 </body>
 </html>
