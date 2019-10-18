@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Change status</title>
+</head>
+<body>
+    <form action="{% url 'add_status' location %}" method="post">
+        {{ form.as_p }}
+        {% csrf_token %}
+        <input type="submit" value="Ouvrir le lieu" />
+    </form>
+</body>
+</html>
