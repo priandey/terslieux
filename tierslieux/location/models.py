@@ -10,7 +10,6 @@ class Location(models.Model):
     moderator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="location")
     slug = models.SlugField(unique=True)
 
-#TODO : Renseigner sur les token
 
 class Status(models.Model):
     activity = models.CharField(max_length=255, default="Ouvert")
@@ -26,6 +25,7 @@ class Status(models.Model):
         self.close_date = timezone.now()
         self.save()
 
+    @property
     def is_opened(self):
         if not self.close_date:
             return True
@@ -37,9 +37,11 @@ class VolunteeringRequest(models.Model): #TODO : Volunteer can volunteer twice i
     comment = models.CharField(max_length=255, null=True, default="Je souhaiterais être bénévole pour votre association")
     validated = models.BooleanField(null=True)
     date = models.DateTimeField(auto_now_add=True)
-    #TODO: Add Field "location", "token"
-    #TODO : Déterminer le lien du sender vis à vis du lieu
 
+    @property
+    def who_is_sender(self):
+        #TODO: Déterminer si le sender est un moderator ou un volunteer vis à vis du lieu
+        return True
 
 class VolunteerBase(models.Model): #TODO : Change VolunteerBase into Volunteer and field volunteer to user
     volunteer = models.ForeignKey(CustomUser, on_delete=models.CASCADE)

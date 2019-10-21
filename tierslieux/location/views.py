@@ -2,8 +2,6 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
-from user.models import CustomUser
-
 from .models import Location, Status, VolunteerBase, VolunteeringRequest
 from .forms import LocationForm, StatusForm
 
@@ -12,15 +10,12 @@ def location_detail(request, slug):
     statuses = Status.objects.filter(location=location)
     last_status = Status.objects.filter(location=location).last()
     if last_status:
-        if last_status.is_opened(): #TODO : Demander à Thierry pourquoi je ne peux pas capturer le True
-            opened = True
-        else:
-            opened = False
+        opened = last_status.is_opened
 
     if request.user.is_authenticated:
         user = request.user
         if user == location.moderator:
-            disclaimer = "Vous êtes modérateurs de ce lieu"
+            disclaimer = "Vous êtes modérateur de ce lieu"
             location_mod = True
 
         for entry in VolunteerBase.objects.filter(location=location):

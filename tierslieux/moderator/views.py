@@ -44,7 +44,7 @@ def change_vol_status(request, slug, req_pk, status):
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
-def request_volunteer(request, slug):
+def request_volunteer(request, slug): #TODO : Email activation à la création d'un compte bénévole
     location = Location.objects.get(slug=slug)
     if location.moderator == request.user:
         if request.method == 'POST':
