@@ -37,7 +37,7 @@
                 <input type="submit" value="Fermer le lieu">
                 {% csrf_token %}
             </form>
-        {% else %}
+        {% else %} <!--TODO : "Ouvrir le lieu" proposé pour les modératurs en attente d'acceptation -->
              <a href="{% url 'add_status' location.slug %}">Ouvrir le lieu</a>
          {% endif %}
     {% endif %}

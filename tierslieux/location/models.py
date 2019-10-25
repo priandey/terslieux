@@ -10,7 +10,6 @@ class Location(models.Model):
     moderator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="location")
     slug = models.SlugField(unique=True)
 
-
 class Status(models.Model):
     activity = models.CharField(max_length=255, default="Ouvert")
     open_date = models.DateTimeField(auto_now_add=True)
@@ -31,6 +30,14 @@ class Status(models.Model):
             return True
         else:
             return False
+
+    @property
+    def open_time(self): #TODO : Return time in day/hours/minutes
+        if self.close_date:
+            opened_time = self.close_date - self.open_date
+            return opened_time.total_seconds()
+
+
 class VolunteeringRequest(models.Model): #TODO : Volunteer can volunteer twice in a location
     sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="request_sent")
     receiver = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="request_received")
@@ -39,10 +46,11 @@ class VolunteeringRequest(models.Model): #TODO : Volunteer can volunteer twice i
     date = models.DateTimeField(auto_now_add=True)
 
     @property
-    def who_is_sender(self):
-        #TODO: Déterminer si le sender est un moderator ou un volunteer vis à vis du lieu
-        return True
-
+    def sender_is_mod(self):
+        if self.volunteer_base.get().location.moderator == self.sender:
+            return True
+        else:
+            return False
 class VolunteerBase(models.Model): #TODO : Change VolunteerBase into Volunteer and field volunteer to user
     volunteer = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     location = models.ForeignKey(Location, on_delete=models.CASCADE)

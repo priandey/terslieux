@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'user',
     'moderator',
     'userlocations',
+    'statistic',
 ]
 
 MIDDLEWARE = [

@@ -84,10 +84,11 @@ def add_status(request, slug):
             return render(request, 'location/status_declaration.html', locals())
 
 @login_required(login_url='/user/login/')
-def close_status(request, slug):
+def close_status(request, slug): #TODO : Moderator cannot close location but have button
     location = Location.objects.get(slug=slug)
     if request.method == 'POST':
         if VolunteerBase.objects.filter(location=location, volunteer=request.user): # TODO : Should check wether volunteer opened the status to close it
             Status.objects.filter(location=location).last().close()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
 #TODO : location_edition view for moderator
