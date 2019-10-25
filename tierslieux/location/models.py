@@ -35,7 +35,12 @@ class Status(models.Model):
     def open_time(self): #TODO : Return time in day/hours/minutes
         if self.close_date:
             opened_time = self.close_date - self.open_date
-            return opened_time.total_seconds()
+            opened_time_seconds = opened_time.total_seconds()
+            ot_hours = int(opened_time_seconds // 3600)
+            ot_rest = opened_time_seconds % 3600
+            ot_minutes = int(ot_rest // 60)
+            return {'total_seconds': opened_time_seconds,
+                    'pretty': '{} hours, {} minutes'.format(ot_hours, ot_minutes)}
 
 
 class VolunteeringRequest(models.Model): #TODO : Volunteer can volunteer twice in a location

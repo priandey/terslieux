@@ -1,0 +1,40 @@
+td, th {
+    text-align: center;
+    border: 1px solid;
+}
+
+thead,tfoot {
+    background-color: #333;
+    color: #fff;
+}
+
+.btn-side-menu {
+    margin-top:1em;
+    padding-right: 2px;
+    padding-left: 2px;
+    width: 100% ;
+}
+
+.gmap {
+    background-color: chartreuse;
+}
+
+.card-header {
+    background-color: rgba(58, 157, 255, 0.25);
+}
+
+#top-menu {
+    background-color: aqua;
+    padding: 1.2em 1.5em;
+}
+
+#side-menu {
+    background-color: crimson;
+    min-height: 25em;
+    padding:0 0;
+}
+
+#content {
+    background-color: bisque;
+    padding : 2em 2em;
+}

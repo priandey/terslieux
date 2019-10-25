@@ -1,53 +1,63 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ location.name }}</title>
-</head>
-<body>
-{% block 'location_detail' %}
-    <h2>Nom : {{ location.name }}</h2>
-    <p>Description : {{ location.description }}</p>
-    <p>Modérateur : {{ location.moderator.email }}</p>
-    <p>Bénévoles : {% for entry in location.volunteerbase_set.all %}<br />
-            {{ entry.volunteer.email }}
-            {% if entry.volunteering_request.validated != True %}
-        <b>Demande de confirmation</b>
-            {% endif %}
-        {% endfor %}
-    </p>
-    <p>slug : {{ location.slug }}</p>
+{% extends 'moderator/userboard_base.html' %}
+
+{% block title %} {{location.name}} {% endblock %}
+
+{% block subtitle %}
     {% if user.is_authenticated %}
         {% if disclaimer %}
              <b>{{ disclaimer }}</b>
-            {% if location_mod %}
-                <a href="{% url 'volunteers_pannel' location.slug %}">Panneau de modération</a>
+             {% if location_mod %}
+                <a href="{% url 'volunteers_panel' location.slug %}" class="btn btn-secondary">Panneau de modération</a>
             {% endif %}
-        {% else %}
-            <form method="POST" action="{% url 'require_volunteering' %}">
-                <input type="text" name="comment"/>
-                <input type="hidden" value="{{ location.slug }}" name="location"/>
-                <input type="submit" value="Demander à être bénévole" />
-                {% csrf_token %}
-             </form>
-        {% endif %}
-
-        {% if opened %}
-            <form action="{% url 'close_status' location.slug %}" method="post">
-                <input type="submit" value="Fermer le lieu">
-                {% csrf_token %}
-            </form>
-        {% else %} <!--TODO : "Ouvrir le lieu" proposé pour les modératurs en attente d'acceptation -->
-             <a href="{% url 'add_status' location.slug %}">Ouvrir le lieu</a>
+            {% if opened %}
+            <a href="{% url 'close_status' location.slug %}" class="btn btn-secondary">Fermer le lieu
+            </a>
+        {% else %} <!--TODO : "Ouvrir le lieu" proposé pour les volunteers en attente d'acceptation -->
+             <a href="{% url 'add_status' location.slug %}" class="btn btn-secondary">Ouvrir le lieu</a>
          {% endif %}
-    {% endif %}
-
-    {%if statuses %}
-        <h2>Dernière activité du lieu référencée</h2>
-        {% for status in statuses reversed%}
-            <p>{{ status.activity}}, {{ status.open_date }} {% if status.close_date %}<b>Fermé le :</b> {{ status.close_date }} {% endif %}</p>
-        {% endfor %}
+        {% else %}
+            <a href="{% url 'require_volunteering' location.slug %}" class="btn btn-secondary">
+                Proposer d'être bénévole
+             </a>
+        {% endif %}
     {% endif %}
 {% endblock %}
-</body>
-</html>
+
+{% block content %}
+
+<div class="col-lg-6">
+    <p>{{ location.description }}</p>
+    <p>Modérateur : {{ location.moderator.email }}</p>
+    <p>Bénévoles : <ul>{% for entry in location.volunteerbase_set.all %}
+                <li>{{ entry.volunteer.email }}</li>
+            {% if entry.volunteering_request.validated != True %}
+        <b>Demande de confirmation</b>
+            {% endif %}
+        {% endfor %}</ul>
+    </p>
+    </div>
+<div class="col-lg-6 justify-content-center gmap">GMAP</div>
+
+    {%if statuses %} <!-- TODO : Add pagination for case of numerous statuses -->
+        <h3 class="col-lg-12">Dernières activités du lieu référencées</h3>
+            <div id="accordeon" class=" col-lg-12 justify-content-center">
+        {% for status in statuses reversed%}
+              <div class="card">
+                <div class="card-header text-center">
+                    <a href="#id{{status.pk}}" class="card-link" data-toggle="collapse" data-parents="#accordeon">
+                      {{ status.activity}}
+                    </a>
+                </div>
+
+                <div class="collapse" id="id{{status.pk}}">
+                  <div class="card-body">
+                    <p class="card-text"> Ouverture : {{ status.open_date }}</p>
+                     {% if status.close_date %}<p class="card-text"> Fermeture : {{ status.close_date }}</p>{% endif %}
+                  </div>
+                </div>
+              </div>
+        {% endfor %}
+                </div>
+    {% endif %}
+{% endblock %}
+

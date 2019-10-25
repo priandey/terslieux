@@ -22,8 +22,6 @@ def location_detail(request, slug):
             if user == entry.volunteer:
                 if entry.volunteering_request.validated:
                     disclaimer = "Vous êtes bénévole sur ce lieu"
-                else:
-                    disclaimer = "Le modérateur de ce lieu vous a proposé d'être bénévole"
             else:
                 pass
 
@@ -44,32 +42,29 @@ def location_creation(request):
     return render(request, 'location/location_creation.html', locals())
 
 @login_required(login_url='/user/login/')
-def require_volunteering(request):
-    if request.method == 'POST':
-        location = Location.objects.get(slug=request.POST['location'])
-        comment = request.POST['comment']
-        requesting_user = request.user
-        moderator = location.moderator
+def require_volunteering(request, slug):
+    location = Location.objects.get(slug=slug)
+    requesting_user = request.user
+    moderator = location.moderator
 
-        sent_request = VolunteeringRequest.objects.create(
-                sender=requesting_user,
-                receiver=moderator,
-                comment=comment,
-                validated=False,
-        ) #Creating a new request
+    sent_request = VolunteeringRequest.objects.create(
+            sender=requesting_user,
+            receiver=moderator,
+            validated=False,
+    ) #Creating a new request
 
-        VolunteerBase.objects.create(
-                volunteer=requesting_user,
-                location=location,
-                is_active=False,
-                volunteering_request=sent_request
-        ) #Creating a new entry for the location in the volunteer base
-        return redirect('location', slug=location.slug)
+    VolunteerBase.objects.create(
+            volunteer=requesting_user,
+            location=location,
+            is_active=False,
+            volunteering_request=sent_request
+    ) #Creating a new entry for the location in the volunteer base
+    return redirect('location', slug=location.slug)
 
 @login_required(login_url='/user/login/')
 def add_status(request, slug):
     location = Location.objects.get(slug=slug)
-    if VolunteerBase.objects.filter(location=location, volunteer=request.user):
+    if VolunteerBase.objects.filter(location=location, volunteer=request.user) or request.user == location.moderator:
         if request.method == 'POST':
             form = StatusForm(request.POST)
             if form.is_valid():
@@ -84,10 +79,9 @@ def add_status(request, slug):
             return render(request, 'location/status_declaration.html', locals())
 
 @login_required(login_url='/user/login/')
-def close_status(request, slug): #TODO : Moderator cannot close location but have button
+def close_status(request, slug):
     location = Location.objects.get(slug=slug)
-    if request.method == 'POST':
-        if VolunteerBase.objects.filter(location=location, volunteer=request.user): # TODO : Should check wether volunteer opened the status to close it
+    if VolunteerBase.objects.filter(location=location, volunteer=request.user) or request.user == location.moderator:
             Status.objects.filter(location=location).last().close()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 

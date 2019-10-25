@@ -7,7 +7,7 @@ from user.models import CustomUser
 
 def moderator_pannel(request):
     locations = Location.objects.filter(moderator=request.user)
-    return render(request, "moderator/moderator_pannel.html", locals())
+    return render(request, "moderator/moderator_panel.html", locals())
 
 def volunteers(request, slug):
     location = Location.objects.get(slug=slug)
@@ -86,4 +86,4 @@ def mod_create_vol(request, slug):
                     is_active=False,
                     volunteering_request=sent_request
             )
-    return redirect(to='volunteers_pannel', slug=slug, permanent=True)
+    return redirect(to='volunteers_panel', slug=slug, permanent=True)

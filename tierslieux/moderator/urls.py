@@ -19,7 +19,7 @@ from . import views
 
 urlpatterns = [
     path('', views.moderator_pannel, name='moderator_pannel'),
-    path('<slug:slug>/', views.volunteers, name='volunteers_pannel'),
+    path('<slug:slug>/', views.volunteers, name='volunteers_panel'),
     path('<slug:slug>/create_vol', views.mod_create_vol, name='mod_create_vol'),
     path('<slug:slug>/<int:req_pk>/<str:status>', views.change_vol_status, name='validate'),
     path('<slug:slug>/new_vol/', views.request_volunteer, name='new_vol'),

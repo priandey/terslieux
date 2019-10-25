@@ -1,21 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Volunteers Management</title>
-    <style>table,
-td {
-    border: 1px solid #333;
-}
+{% extends 'moderator/userboard_mod.html' %}
 
-thead,
-tfoot {
-    background-color: #333;
-    color: #fff;
-}
-</style>
-</head>
-<body>
+
+{% block content %}
+    <h2>Gestion des bénévoles pour {{ location.name }}</h2>
     <table>
     <thead>
         <tr>
@@ -46,14 +33,14 @@ tfoot {
   <tbody>
         <tr>
             <td><b>Utilisateur</b></td>
-            <td><b>Commentaire</b></td>
-            <td><b>Valider la requête ?</b></td>
+            <td colspan="2"><b>Valider la requête ?</b></td>
+
         </tr>
         {% for volunteer in required_by_vol %}
             <tr>
                 <td>{{ volunteer.volunteer.email}}</td>
-                <td>{{ volunteer.volunteering_request.comment }}</td>
                 <td><a href="{% url 'validate' location.slug volunteer.volunteering_request.pk 'validated' %}">OUI</a></td>
+                <td><a href="{% url 'validate' location.slug volunteer.volunteering_request.pk 'remove' %}">NON</a></td>
             </tr>
         {% endfor %}
     </tbody>
@@ -92,5 +79,7 @@ tfoot {
       {% csrf_token %}
     <input type="submit" value="Envoyer la requête" />
 </form>
-</body>
-</html>
+{% endblock %}
+
+<style>
+</style>
