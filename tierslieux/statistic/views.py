@@ -6,7 +6,7 @@ import weasyprint
 from user.models import CustomUser
 from location.models import Location, Status, VolunteerBase
 
-def generate_pdf(request, slug):
+def generate_pdf(request, slug): #TODO : Cannot generate if an activity is running
     location = Location.objects.get(slug=slug)
     if request.user == location.moderator:
         statuses = location.status.all()

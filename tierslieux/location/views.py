@@ -25,7 +25,7 @@ def location_detail(request, slug):
             else:
                 pass
 
-    return render(request, 'location/location_detail.html', locals())
+    return render(request, 'location/location_detail_logged.html', locals())
 
 
 @login_required(login_url='/user/login/')
