@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 
-from location.models import VolunteerBase, VolunteeringRequest
+from location.models import VolunteerBase, VolunteeringRequest, Location, Status
 
 @login_required(login_url='/user/login/')
 def locations(request):

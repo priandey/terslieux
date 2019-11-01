@@ -1,0 +1,7 @@
+body {
+    background-image: linear-gradient(rgba(219, 57, 20, 0.15),rgba(233, 188, 7, 0.15)), url('img/bg.webp');
+}
+
+nav {
+    padding-top:1em;
+}

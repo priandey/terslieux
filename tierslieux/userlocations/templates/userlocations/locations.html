@@ -1,3 +1,5 @@
+{% extends 'moderator/userboard_base.html' %}
+{% block content %}
 {% for entry in volunteerbase %}
     <a href="{% url 'location' entry.location.slug %}"> {{ entry.location.name }} </a>
     {% if entry.volunteering_request.validated == True %}
@@ -10,3 +12,4 @@
     {% endif %}
     <br />
 {% endfor %}
+{% endblock %}

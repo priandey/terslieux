@@ -14,7 +14,7 @@ class Status(models.Model):
     activity = models.CharField(max_length=255, default="Ouvert")
     open_date = models.DateTimeField(auto_now_add=True)
     close_date = models.DateTimeField(null=True)
-    volunteer = models.ForeignKey(CustomUser, related_name='opened', on_delete=models.SET_NULL, null=True) #TODO : Edit this to point to VolunteerBase
+    volunteer = models.ForeignKey(CustomUser, related_name='opened', on_delete=models.SET_NULL, null=True)
     location = models.ForeignKey(Location, related_name='status', on_delete=models.CASCADE)
 
     def __repr__(self):
@@ -32,7 +32,7 @@ class Status(models.Model):
             return False
 
     @property
-    def open_time(self): #TODO : Return time in day/hours/minutes
+    def open_time(self):
         if self.close_date:
             opened_time = self.close_date - self.open_date
             opened_time_seconds = opened_time.total_seconds()
@@ -56,7 +56,7 @@ class VolunteeringRequest(models.Model): #TODO : Volunteer can volunteer twice i
             return True
         else:
             return False
-class VolunteerBase(models.Model): #TODO : Change VolunteerBase into Volunteer and field volunteer to user
+class VolunteerBase(models.Model):
     volunteer = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=False)

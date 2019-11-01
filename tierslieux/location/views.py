@@ -22,10 +22,10 @@ def location_detail(request, slug):
             if user == entry.volunteer:
                 if entry.volunteering_request.validated:
                     disclaimer = "Vous êtes bénévole sur ce lieu"
-            else:
-                pass
 
-    return render(request, 'location/location_detail_logged.html', locals())
+        return render(request, 'location/location_detail_logged.html', locals())
+    else:
+        return render(request, 'location/location_detail_common.html', locals())
 
 
 @login_required(login_url='/user/login/')

@@ -1,13 +1,16 @@
+{% extends 'home/index.html' %}
+{% block header %}
 {% if duplicate_email %}
-    <strong class="text-white-75">Ce compte existe déjà, veuillez en saisir un nouveau ou
+    <strong>Ce compte existe déjà, veuillez en saisir un nouveau ou
         bien <a href="{% url 'login' %}"> connectez-vous ici</a></strong>
 {% endif %}
-<form action="{% url 'signin' %}" method="post">
+<form action="{% url 'signin' %}" method="post" id="signinForm">
     {% csrf_token %}
     {{ form.as_p }}
+    <label for="validation">Vérification du mot de passe</label><input type="password" id="validation" /><br />
+    <span id="warningPassword"></span>
     <input type="submit" value="Créer un compte" />
 </form>
 <br>
 <a href="{% url 'login' %}"><input type="button" value="J'ai déjà un compte" /></a>
-
-<!-- TODO: Password check -->
+{% endblock %}
