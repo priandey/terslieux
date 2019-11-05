@@ -1,5 +1,12 @@
 {% extends 'moderator/userboard_base.html' %}
 {% block content %}
+    <h2 class="col-lg-12">Mes favoris</h2>
+    <div class="col-lg-12">
+    {% for favorite in favorites %}
+        <a href="{% url 'location' favorite.location.slug %}">{{ favorite.location.name }}</a> <br />
+    {% endfor %}
+    </div>
+    <h2 class="col-lg-12">Lieux de bénévolat</h2>
 {% for entry in volunteerbase %}
     <a href="{% url 'location' entry.location.slug %}"> {{ entry.location.name }} </a>
     {% if entry.volunteering_request.validated == True %}
@@ -12,4 +19,10 @@
     {% endif %}
     <br />
 {% endfor %}
+    <h2 class="col-lg-12">Lieux modérés</h2>
+    {% for entry in moderated %}
+        <div class="col-lg-12">
+        <a href="{% url 'location' entry.slug %}">{{ entry.name }}</a> <br />
+        </div>
+    {% endfor %}
 {% endblock %}

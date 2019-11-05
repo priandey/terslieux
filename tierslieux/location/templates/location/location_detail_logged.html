@@ -1,6 +1,13 @@
 {% extends 'moderator/userboard_base.html' %}
 
-{% block title %} {{location.name}} {% endblock %}
+{% block title %}
+    {{location.name}}
+    {% if is_favorite %}
+        <i class="fav fas fa-star" title="Ce lieu est dans vos favoris"></i>
+    {% else %}
+        <a href="{% url 'new_fav' location.slug %}" class="far fa-star fav"></a>
+    {% endif %}
+{% endblock %}
 
 {% block subtitle %}
     {% if user.is_authenticated %}

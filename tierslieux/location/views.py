@@ -2,6 +2,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
+from userlocations.models import UserFavorite
 from .models import Location, Status, VolunteerBase, VolunteeringRequest
 from .forms import LocationForm, StatusForm
 
@@ -22,6 +23,9 @@ def location_detail(request, slug):
             if user == entry.volunteer:
                 if entry.volunteering_request.validated:
                     disclaimer = "Vous êtes bénévole sur ce lieu"
+
+        if UserFavorite.objects.filter(location=location, user=user):
+            is_favorite = True
 
         return render(request, 'location/location_detail_logged.html', locals())
     else:

@@ -8,6 +8,15 @@ thead,tfoot {
     color: #fff;
 }
 
+a:hover {
+    text-decoration: none;
+    color: #ffcd07;
+}
+
+.fav {
+    color : #e9bc07;
+}
+
 .btn-side-menu {
     margin-top:1em;
     padding-right: 2px;
