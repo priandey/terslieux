@@ -16,14 +16,19 @@
                     <div class="col-lg-3 align-self-center"><i class="fas fa-user-circle fa-3x"></i></div>
                     <div class="col-lg-8 align-self-center">{{user.email}}</div>
                 </div>
-                <hr class="my-2">
+                <hr class="my-2" />
+                <div class="row">
                 {% block side_menu %}
                 <div class="col-lg-12">
-                    <div class="col-12"><a href="#" class="btn btn-primary btn-side-menu">Mes lieux</a></div>
+                    <div class="col-12"><a href="{% url 'private_locations' %}" class="btn btn-primary btn-side-menu">Mes lieux</a></div>
                     <div class="col-12"><a href="#" class="btn btn-primary btn-side-menu">Mon profil</a></div>
                 </div>
                 {% endblock %}
-            </div>
+                </div>
+                <div class="row align-items-end">
+                <div class="col-lg-12 text-center"><a href="{% url 'create_loc' %}" class="fas fa-plus-square fa-3x" title="Créer un lieu"></a></div>
+                </div>
+                </div>
             <div class="col-lg-10">
                 <div class="row align-items-center" id="top-menu">
                     <div class="col-lg-10">

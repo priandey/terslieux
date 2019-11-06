@@ -61,3 +61,6 @@ class VolunteerBase(models.Model):
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=False)
     volunteering_request = models.ForeignKey(VolunteeringRequest, on_delete=models.CASCADE, related_name="volunteer_base")
+
+    class Meta:
+        unique_together = (("volunteer", "location"),)
