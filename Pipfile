@@ -9,7 +9,6 @@ coverage = "*"
 [packages]
 django = "*"
 weasyprint = "*"
-cairo = "*"
 psycopg2 = "*"
 
 [requires]
