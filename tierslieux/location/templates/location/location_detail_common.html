@@ -9,7 +9,7 @@
         {%if statuses %} <!-- TODO : Add pagination for case of numerous statuses -->
             <h3 class="col-lg-12">Dernières activités du lieu</h3>
             <div id="accordeon" class=" col-lg-12">
-        {% for status in statuses reversed%}
+        {% for status in statuses|slice:'0:11'%}
               <div class="card">
                 <div class="card-header text-center">
                     <a href="#id{{status.pk}}" class="card-link" data-toggle="collapse" data-parents="#accordeon">

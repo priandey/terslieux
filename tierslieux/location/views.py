@@ -1,5 +1,5 @@
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 
 from userlocations.models import UserFavorite
@@ -8,7 +8,7 @@ from .forms import LocationForm, StatusForm
 
 def location_detail(request, slug):
     location = Location.objects.get(slug=slug)
-    statuses = Status.objects.filter(location=location)
+    statuses = Status.objects.filter(location=location).order_by('-open_date')
     last_status = Status.objects.filter(location=location).last()
     if last_status:
         opened = last_status.is_opened
@@ -90,3 +90,11 @@ def close_status(request, slug):
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 #TODO : location_edition view for moderator
+
+
+def search_location(request):
+    if request.POST:
+        searchterm = request.POST['research']
+        location = get_object_or_404(Location, name=searchterm)
+        print(location.name)
+        return redirect('location', slug=location.slug)

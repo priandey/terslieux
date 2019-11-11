@@ -1,4 +1,4 @@
-$("#signinForm").submit(function(event){
+$(".passwordForm").submit(function(event){
     if ($("#password").val() !== $("#validation").val()) {
         $('#warningPassword').text('Mots de passes différents').show();
         event.preventDefault();

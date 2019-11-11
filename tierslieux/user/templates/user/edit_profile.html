@@ -1,0 +1,19 @@
+{% extends 'moderator/userboard_base.html' %}
+{% block title %} Edition des informations du compte {% endblock %}
+{% block content %}
+    <div class="col-lg-7">
+         <form action="{% url 'edit_profile' %}" method="post" class="passwordForm">
+            {{ form.as_p }}
+            <input type="password" id="validation" class="form-control" placeholder="Confirmation du mot de passe" /><br />
+            <span id="warningPassword"></span>
+            <input type="submit" value="Modifier mon mot de passe" class="btn btn-secondary" />
+            {% csrf_token %}
+        </form>
+    </div>
+
+    <div class="col-lg-10 text-center" id="delAccount">
+        <a href="{% url 'delete_profile' %}" class="btn btn-primary del-button">Supprimer votre compte et toutes les données qui lui sont liées</a>
+    </div>
+
+{% endblock %}
+

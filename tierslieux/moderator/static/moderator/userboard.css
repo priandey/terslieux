@@ -32,13 +32,23 @@ a:hover {
     background-color: rgba(58, 157, 255, 0.25);
 }
 
+.del-button {
+    background-color: #9b0000;
+    border-color: #9b0000;
+}
+
+.del-button:hover {
+    background-color: #dc000a;
+    border-color: #dc000a;
+}
+
 #top-menu {
     background-color: aqua;
     padding: 1.2em 1.5em;
 }
 
 #side-menu {
-    background-color: crimson;
+    background-color: #9b0000;
     min-height: 25em;
     padding:0 0;
 }
@@ -46,4 +56,9 @@ a:hover {
 #content {
     background-color: bisque;
     padding : 2em 2em;
+}
+
+#delAccount {
+    margin-top: 3rem;
+    margin-bottom: 0.3rem;
 }

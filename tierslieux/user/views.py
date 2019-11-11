@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.db.utils import IntegrityError
-from django.http import HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
 
-from .forms import SigninForm
+from .forms import SigninForm, EditProfileForm
 from .models import CustomUser
 
 
@@ -19,7 +20,9 @@ def sign_in(request):
         try:
             new_user = CustomUser.objects.create_user(email, password)
             new_user.save()
-            return redirect('login')
+            user = authenticate(request, username=email, password=password)
+            login(request, user)
+            return redirect('home')
         except IntegrityError:
             duplicate_email = True
     else:
@@ -56,3 +59,30 @@ def log_out(request):
 
     logout(request)
     return redirect("home")
+
+
+@login_required(login_url='/user/login/')
+def profile(request):
+    return render(request, "user/userprofile.html", locals())
+
+
+@login_required(login_url='/user/login/')
+def edit_profile(request):
+    user = request.user
+    if request.method == 'POST':
+        form = EditProfileForm(request.POST)
+        if form.is_valid():
+            user.set_password(form.cleaned_data['password'])
+        else:
+            print("INVALID FORM")
+        return redirect('userprofile')
+    else:
+        form = EditProfileForm()
+        return render(request, 'user/edit_profile.html', {'form':form})
+
+@login_required(login_url='/user/login')
+def delete_profile(request):
+    user = request.user
+    logout(request)
+    user.delete()
+    return redirect('home', permanent=True)
