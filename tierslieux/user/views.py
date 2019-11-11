@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.db.utils import IntegrityError
+from django.http import HttpResponseRedirect
 
 from .forms import SigninForm
 from .models import CustomUser
@@ -18,7 +19,7 @@ def sign_in(request):
         try:
             new_user = CustomUser.objects.create_user(email, password)
             new_user.save()
-            return redirect('home')
+            return redirect('login')
         except IntegrityError:
             duplicate_email = True
     else:
@@ -41,7 +42,7 @@ def log_in(request):
         if user is not None:
             login(request=request, user=user)
             logged = True
-            return(redirect("home"))
+            return redirect("private_locations")
         else:
             logged = False
 

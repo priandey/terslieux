@@ -11,7 +11,8 @@ class Location(models.Model):
     slug = models.SlugField(unique=True)
 
 class Status(models.Model):
-    activity = models.CharField(max_length=255, default="Ouvert")
+    activity = models.CharField(max_length=255)
+    description = models.TextField(null=True)
     open_date = models.DateTimeField(auto_now_add=True)
     close_date = models.DateTimeField(null=True)
     volunteer = models.ForeignKey(CustomUser, related_name='opened', on_delete=models.SET_NULL, null=True)

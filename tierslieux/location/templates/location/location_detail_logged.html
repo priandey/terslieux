@@ -35,18 +35,18 @@
 <div class="col-lg-6">
     <p>{{ location.description }}</p>
     <p>Modérateur : {{ location.moderator.email }}</p>
-    <p>Bénévoles : <ul>{% for entry in location.volunteerbase_set.all %}
+    <div>Bénévoles : <ul>{% for entry in location.volunteerbase_set.all %}
                 <li>{{ entry.volunteer.email }}</li>
             {% if entry.volunteering_request.validated != True %}
         <b>Demande de confirmation</b>
             {% endif %}
         {% endfor %}</ul>
-    </p>
+    </div>
     </div>
 <div class="col-lg-6 justify-content-center gmap">GMAP</div>
 
     {%if statuses %} <!-- TODO : Add pagination for case of numerous statuses -->
-        <h3 class="col-lg-12">Dernières activités du lieu référencées</h3>
+        <h3 class="col-lg-12">Dernières activités référencées du lieu</h3>
             <div id="accordeon" class=" col-lg-12 justify-content-center">
         {% for status in statuses reversed%}
               <div class="card">
@@ -58,8 +58,9 @@
 
                 <div class="collapse" id="id{{status.pk}}">
                   <div class="card-body">
-                    <p class="card-text"> Ouverture : {{ status.open_date }}</p>
-                     {% if status.close_date %}<p class="card-text"> Fermeture : {{ status.close_date }}</p>{% endif %}
+                    {% if status.description %}<p class="card-text"> {{ status.description }}</p>{% endif %}
+                    <p class="card-text"> Ouverture : {{ status.open_date|date:"l j F Y, G:s" }}</p>
+                     {% if status.close_date %}<p class="card-text"> Fermeture : {{ status.close_date|date:"l j F Y, G:s" }}</p>{% endif %}
                   </div>
                 </div>
               </div>

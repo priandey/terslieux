@@ -8,7 +8,7 @@
 {% block content-right %}
         {%if statuses %} <!-- TODO : Add pagination for case of numerous statuses -->
             <h3 class="col-lg-12">Dernières activités du lieu</h3>
-            <div id="accordeon" class=" col-lg-12 justify-content-center">
+            <div id="accordeon" class=" col-lg-12">
         {% for status in statuses reversed%}
               <div class="card">
                 <div class="card-header text-center">
@@ -19,6 +19,7 @@
 
                 <div class="collapse" id="id{{status.pk}}">
                   <div class="card-body">
+                    {% if status.description %}<p class="card-text"> {{ status.description }}</p>{% endif %}
                     <p class="card-text"> Ouverture : {{ status.open_date }}</p>
                      {% if status.close_date %}<p class="card-text"> Fermeture : {{ status.close_date }}</p>{% endif %}
                   </div>

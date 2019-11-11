@@ -1,14 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Création d'un lieu</title>
-</head>
-<body>
-    <form action="/l/create/" method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-        <input type="submit" value="Submit" />
-    </form>
-</body>
-</html>
+{% extends "moderator/userboard_base.html" %}
+{% block content %}
+    <div class="col-lg-12 justify-content-center">
+        <form action="/l/create/" method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+            <input type="submit" value="Créer un lieu"  class="btn btn-secondary"/>
+        </form>
+    </div>
+{% endblock %}
