@@ -73,16 +73,15 @@ def edit_profile(request):
         form = EditProfileForm(request.POST)
         if form.is_valid():
             user.set_password(form.cleaned_data['password'])
-        else:
-            print("INVALID FORM")
         return redirect('userprofile')
     else:
         form = EditProfileForm()
-        return render(request, 'user/edit_profile.html', {'form':form})
+        return render(request, 'user/edit_profile.html', {'form': form})
 
 @login_required(login_url='/user/login')
 def delete_profile(request):
-    user = request.user
-    logout(request)
-    user.delete()
+    if request.method == 'POST':
+        user = request.user.pk
+        logout(request)
+        CustomUser.objects.get(pk=user).delete()
     return redirect('home', permanent=True)

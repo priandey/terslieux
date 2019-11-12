@@ -12,7 +12,10 @@
     </div>
 
     <div class="col-lg-10 text-center" id="delAccount">
-        <a href="{% url 'delete_profile' %}" class="btn btn-primary del-button">Supprimer votre compte et toutes les données qui lui sont liées</a>
+        <form action="{% url 'delete_profile' %}" method="post">
+        <input type="submit" href="{% url 'delete_profile' %}" class="btn btn-primary del-button" value="Supprimer votre compte et toutes les données qui lui sont liées"/>
+        {% csrf_token %}
+        </form>
     </div>
 
 {% endblock %}
