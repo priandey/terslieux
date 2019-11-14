@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.urls import reverse
 from user.models import CustomUser
 
 
@@ -9,6 +10,7 @@ class Location(models.Model):
     volunteers = models.ManyToManyField(CustomUser, through='VolunteerBase', related_name="volunteers")
     moderator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="location")
     slug = models.SlugField(unique=True)
+
 
 class Status(models.Model):
     activity = models.CharField(max_length=255)

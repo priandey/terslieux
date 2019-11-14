@@ -73,6 +73,7 @@ def edit_profile(request):
         form = EditProfileForm(request.POST)
         if form.is_valid():
             user.set_password(form.cleaned_data['password'])
+            user.save()
         return redirect('userprofile')
     else:
         form = EditProfileForm()

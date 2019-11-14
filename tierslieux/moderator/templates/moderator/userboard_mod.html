@@ -4,7 +4,7 @@
 
 {% block side_menu %}
         <div class="col-lg-12">
-        <a href="{% url 'location' location.slug %}" class="btn btn-primary btn-side-menu">Informations du lieu</a>
+        <a href="{% url 'location_edition' location.slug %}" class="btn btn-primary btn-side-menu">Modifier les informations</a>
        <a href="{% url 'volunteers_panel' location.slug %}" class="btn btn-primary btn-side-menu">Bénévoles</a>
         <a href="{% url 'generate_pdf' location.slug %}" class="btn btn-primary btn-side-menu">Statistiques</a>
         </div>

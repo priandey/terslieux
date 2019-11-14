@@ -86,4 +86,6 @@ def mod_create_vol(request, slug):
                     is_active=False,
                     volunteering_request=sent_request
             )
+    else:
+        return HttpResponseForbidden()
     return redirect(to='volunteers_panel', slug=slug, permanent=True)

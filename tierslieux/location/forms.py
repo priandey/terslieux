@@ -17,7 +17,8 @@ class LocationForm(forms.ModelForm):
 
             'slug': forms.TextInput(attrs={
                 'class': 'form-control',
-                 'placeholder': "Le lien vers votre lieu"
+                'placeholder': "Le lien vers votre lieu",
+                'id': 'slugField'
             }),
 
         }

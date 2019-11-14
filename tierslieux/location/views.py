@@ -1,10 +1,11 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 
 from userlocations.models import UserFavorite
 from .models import Location, Status, VolunteerBase, VolunteeringRequest
 from .forms import LocationForm, StatusForm
+
 
 def location_detail(request, slug):
     location = Location.objects.get(slug=slug)
@@ -40,10 +41,11 @@ def location_creation(request):
             new_location = form.save(commit=False)
             new_location.moderator = request.user
             new_location.save()
-            return HttpResponseRedirect('/')
+            return redirect('private_locations')
     else:
         form = LocationForm()
     return render(request, 'location/location_creation.html', locals())
+
 
 @login_required(login_url='/user/login/')
 def require_volunteering(request, slug):
@@ -55,15 +57,16 @@ def require_volunteering(request, slug):
             sender=requesting_user,
             receiver=moderator,
             validated=False,
-    ) #Creating a new request
+    )  # Creating a new request
 
     VolunteerBase.objects.create(
             volunteer=requesting_user,
             location=location,
             is_active=False,
             volunteering_request=sent_request
-    ) #Creating a new entry for the location in the volunteer base
+    )  # Creating a new entry for the location in the volunteer base
     return redirect('location', slug=location.slug)
+
 
 @login_required(login_url='/user/login/')
 def add_status(request, slug):
@@ -82,19 +85,59 @@ def add_status(request, slug):
             location = slug
             return render(request, 'location/status_declaration.html', locals())
 
+
 @login_required(login_url='/user/login/')
 def close_status(request, slug):
     location = Location.objects.get(slug=slug)
     if VolunteerBase.objects.filter(location=location, volunteer=request.user) or request.user == location.moderator:
-            Status.objects.filter(location=location).last().close()
+        Status.objects.filter(location=location).last().close()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
-#TODO : location_edition view for moderator
+
+# TODO : location_edition view for moderator
 
 
 def search_location(request):
     if request.POST:
         searchterm = request.POST['research']
         location = get_object_or_404(Location, name=searchterm)
-        print(location.name)
         return redirect('location', slug=location.slug)
+
+
+@login_required(login_url='/user/login/')
+def edit_location(request, slug):
+    location = Location.objects.get(slug=slug)
+    if location.moderator == request.user:
+        if request.method == 'POST':
+            editions = {
+                'name': request.POST['name'],
+                'description': request.POST['description'],
+                'slug': location.slug
+            }
+            form = LocationForm(editions, instance=location)
+            form.save()
+            response = redirect('location', permanent=True, slug=slug)
+        else:
+            form = LocationForm(instance=location)
+            response = render(request, 'location/location_edit.html', {
+                'form': form,
+                'location': location
+            })
+    else:
+        response = HttpResponseForbidden
+
+    return response
+
+@login_required(login_url='/user/login')
+def delete_location(request, slug):
+    location = Location.objects.get(slug=slug)
+    if location.moderator == request.user:
+        if request.method == 'POST':
+            location.delete()
+            response = redirect('private_locations', permanent=True)
+        else:
+            response = HttpResponseForbidden
+    else:
+        response = HttpResponseForbidden
+
+    return response

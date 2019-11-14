@@ -1,0 +1,14 @@
+{% extends 'moderator/userboard_mod.html' %}
+{%  block content %}
+    <form action="{% url 'location_edition' location.slug %}" method="POST">
+        {{ form.name }}
+        {{ form.description }}
+    {% csrf_token %}
+    <input type="submit" value="Enregistrer les modifications" />
+    </form>
+    <form action="{% url 'location_deletion' location.slug %}" method="POST">
+        <input type="submit" value="SUPPRIMER LE LIEU" id="del-button" />
+        {% csrf_token %}
+    </form>
+{% endblock %}
+

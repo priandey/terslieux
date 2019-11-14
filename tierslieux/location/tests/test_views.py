@@ -63,15 +63,40 @@ class TestLocation(TestCase):
         self.assertTemplateUsed(response, "location/location_creation.html")
         self.assertTrue(response.context['form'])
 
-    def test_location_creation_post(self): #TODO: Not covered !
-        formPost = {'name':'NewLoc',
-                    'description':'A New location',
-                    'slug':'newloc'}
+    def test_location_creation_form(self):
+        form_data = {
+            'name'       : 'NewLoc',
+            'description': 'A New location',
+            'slug'       : 'newloc'
+        }
+        form = LocationForm(data=form_data)
+        self.assertTrue(form.is_valid())
+
+    def test_location_creation_form_invalid(self):
+        form_data = {
+            'name'       : 'NewLoc',
+            'description': 'A New location',
+            'slug'       : 'new loc wrong slug'
+        }
+        form = LocationForm(data=form_data)
+        self.assertFalse(form.is_valid())
+
+    def test_location_creation_post_invalid(self):
         self.client.login(email="basic@basic.basic", password="password")
-        response = self.client.post('/l/create', data=formPost)
-        self.assertEqual(response.status_code, 301)
+        form_post = {'name': 'NewLoc',
+                     'description': 'A New location',
+                     'slug': 'new loc wrong url'}
+        response = self.client.post('/l/create', data=form_post)
+        self.assertEqual(response.url, '/l/create/')
+
+    def test_location_creation_post_valid(self):
+        self.client.login(email="basic@basic.basic", password="password")
+        form_post = {'name': 'NewLoc',
+                     'description': 'A New location',
+                     'slug': 'testloc'}
+        response = self.client.post('/l/create', data=form_post)
+        self.assertEqual(response.url, '/private/')
 
     def test_require_volunteering(self):
         self.client.login(email="basic@basic.basic", password="password")
-        response = self.client.get('/l/require/baleine/')
-        self.assertEqual(response.headers, 301)
+        self.client.get('/require/baleine')
