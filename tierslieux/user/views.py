@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import AnonymousUser
 from django.db.utils import IntegrityError
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
@@ -20,8 +21,9 @@ def sign_in(request):
         try:
             new_user = CustomUser.objects.create_user(email, password)
             new_user.save()
-            user = authenticate(request, username=email, password=password)
-            login(request, user)
+            if not isinstance(request.user, AnonymousUser):
+                user = authenticate(request, username=email, password=password)
+                login(request, user)
             return redirect('home')
         except IntegrityError:
             duplicate_email = True
@@ -44,7 +46,6 @@ def log_in(request):
         user = authenticate(request, username=email, password=password)
         if user is not None:
             login(request=request, user=user)
-            logged = True
             return redirect("private_locations")
         else:
             logged = False
@@ -74,10 +75,16 @@ def edit_profile(request):
         if form.is_valid():
             user.set_password(form.cleaned_data['password'])
             user.save()
-        return redirect('userprofile')
+            response = redirect('userprofile')
+        else:
+            response = render(request, 'user/edit_profile.html', {
+                'form': form,
+                'error': True,
+            })
     else:
         form = EditProfileForm()
-        return render(request, 'user/edit_profile.html', {'form': form})
+        response = render(request, 'user/edit_profile.html', {'form': form})
+    return response
 
 @login_required(login_url='/user/login')
 def delete_profile(request):

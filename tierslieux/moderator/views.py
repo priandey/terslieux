@@ -5,10 +5,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from location.models import Location, VolunteerBase, VolunteeringRequest
 from user.models import CustomUser
 
-def moderator_pannel(request):
-    locations = Location.objects.filter(moderator=request.user)
-    return render(request, "moderator/moderator_panel.html", locals())
-
 def volunteers(request, slug):
     location = Location.objects.get(slug=slug)
     if location.moderator == request.user:
@@ -41,8 +37,10 @@ def change_vol_status(request, slug, req_pk, status):
         elif status == "remove":
             req = VolunteeringRequest.objects.get(pk=req_pk)
             req.delete()
-
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+        response = redirect('volunteers_panel', slug=slug)
+    else:
+        response = HttpResponseForbidden()
+    return response
 
 def request_volunteer(request, slug): #TODO : Email activation à la création d'un compte bénévole
     location = Location.objects.get(slug=slug)
@@ -63,9 +61,14 @@ def request_volunteer(request, slug): #TODO : Email activation à la création d
                         is_active=False,
                         volunteering_request=sent_request
                 )  # Creating a new entry for the location in the volunteer base
+
+                response = redirect('volunteers_panel', slug=slug)
             except ObjectDoesNotExist:
-                return render(request, 'moderator/new_user.html', locals())
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+                email = request.POST['email']
+                response = render(request, 'moderator/new_user.html', locals())
+    else:
+        response = HttpResponseForbidden()
+    return response
 
 def mod_create_vol(request, slug):
     location = Location.objects.get(slug=slug)
@@ -86,6 +89,7 @@ def mod_create_vol(request, slug):
                     is_active=False,
                     volunteering_request=sent_request
             )
+        response = redirect('volunteers_panel', slug=slug)
     else:
-        return HttpResponseForbidden()
-    return redirect(to='volunteers_panel', slug=slug, permanent=True)
+        response = HttpResponseForbidden()
+    return response

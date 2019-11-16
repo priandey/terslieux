@@ -2,6 +2,7 @@
 {% block title %} Edition des informations du compte {% endblock %}
 {% block content %}
     <div class="col-lg-7">
+        {% if error %}<p>Les données indiquées sont invalides</p>{% endif %}
          <form action="{% url 'edit_profile' %}" method="post" class="passwordForm">
             {{ form.as_p }}
             <input type="password" id="validation" class="form-control" placeholder="Confirmation du mot de passe" /><br />

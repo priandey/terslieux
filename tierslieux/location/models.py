@@ -42,8 +42,13 @@ class Status(models.Model):
             ot_hours = int(opened_time_seconds // 3600)
             ot_rest = opened_time_seconds % 3600
             ot_minutes = int(ot_rest // 60)
-            return {'total_seconds': opened_time_seconds,
-                    'pretty': '{} hours, {} minutes'.format(ot_hours, ot_minutes)}
+            response = {
+                'total_seconds': opened_time_seconds,
+                'pretty': '{} hours, {} minutes'.format(ot_hours, ot_minutes)
+            }
+        else:
+            response = False
+        return response
 
 
 class VolunteeringRequest(models.Model): #TODO : Volunteer can volunteer twice in a location
@@ -59,6 +64,7 @@ class VolunteeringRequest(models.Model): #TODO : Volunteer can volunteer twice i
             return True
         else:
             return False
+
 class VolunteerBase(models.Model):
     volunteer = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
