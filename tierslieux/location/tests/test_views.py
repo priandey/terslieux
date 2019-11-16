@@ -78,11 +78,11 @@ class TestLocationView(TestCase):
 
     def test_location_creation_post_valid(self):
         self.client.login(email="basic@basic.basic", password="password")
-        form_data = {'name': 'NewLoc',
+        form_data = {'name': 'Fibloc',
                      'description': 'A New location',
                      'slug': 'testloc'}
-        response = self.client.post('/l/create', data=form_data)
-        self.assertEqual(response.url, '/private/')
+        response = self.client.post('/l/create/', data=form_data)
+        self.assertRedirects(response, '/private/')
 
     def test_require_volunteering(self):
         self.client.login(email="basic@basic.basic", password="password")

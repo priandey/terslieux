@@ -35,17 +35,14 @@ def location_detail(request, slug):
 
 @login_required(login_url='/user/login/')
 def location_creation(request):
-    if request.method == 'POST':
-        form = LocationForm(data=request.POST)
-        if form.is_valid():
-            new_location = form.save(commit=False)
-            new_location.moderator = request.user
-            new_location.save()
-            response = redirect('private_locations')
+    form = LocationForm(request.POST or None)
+    if form.is_valid():
+        new_location = form.save(commit=False)
+        new_location.moderator = request.user
+        new_location.save()
+        response = redirect('private_locations')
     else:
-        form = LocationForm()
         response = render(request, 'location/location_creation.html', locals())
-
     return response
 
 
