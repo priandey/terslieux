@@ -4,3 +4,4 @@
 .idea/
 htmlcov/
 tierslieux/settings/prod.py
+tierslieux/settings/dev.py
