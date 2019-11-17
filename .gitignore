@@ -1,5 +1,6 @@
-.idea/
 *.pyc
 *.sqlite3
 .coverage
+.idea/
 htmlcov/
+tierslieux/settings/prod.py
