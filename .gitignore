@@ -2,6 +2,9 @@
 *.sqlite3
 .coverage
 .idea/
+.env
+logs/
+tierslieux/staticfiles
 htmlcov/
 tierslieux/settings/prod.py
 tierslieux/settings/dev.py
