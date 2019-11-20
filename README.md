@@ -34,7 +34,31 @@ En **1** :  Tout les bénévoles actifs du lieu.
 
 En **2** : Une liste des bénévoles ayant demandé à être bénévoles.
 
-En **3** : Les invitations que vous avez envoyées.
+En **3** : Les invitations que vous avez envoyé.
 
 En **4** : Ce formulaire permet d'envoyer une invitation à un bénévole, **si celui-ci n'est pas inscrit sur
 le site, vous serez redirigés vers une autre page vous permettant de lui créer un compte.**
+
+#### Ouvrir un lieu
+Pour ouvrir un lieu, rien de plus simple, rendez-vous sur la page du lieu (ex: http://tierslieux.priandye.eu/l/mon-lieu)
+et cliquez sur **«Ouvrir le lieu»**. Renseignez ensuite un titre pour l'ouverture (ex : "Permanence", 
+"Boutures des framboisiers"), une description plus détaillée, puis validez.
+
+#### Fermer un lieu
+Une fois qu'un lieu est déclaré ouvert, les bénévoles et le modérateur peuvent le déclarer
+fermé en cliquant sur **«Fermer le lieu»**.
+
+#### Obtenir les données d'ouverture d'un lieu
+Il est possible pour le modérateur d'obtenir les données d'ouvertures d'un lieu. Pour cela, cliquez
+sur l'onglet statistique du panneau de modération d'un lieu. Dans un premier temps, les données sont
+accessibles au format de pdf, elles seront très bientôt disponible en CSV.
+
+## Et pour la suite ? 
+De nouvelles fonctionnalitées sont en cours de développement.
+
+- Version **1.0** : Ajout d'un service de géolocalisation pour les lieux, prise en charge des images pour la page
+personnalisées d'un lieu
+
+- Version **1.5** : Notification mail à l'ouverture d'un lieu en favori, API REST, refonte de l'interface.
+
+- Version **2.0** : Version mobile "Progressive Web App" avec notification push, publication d'un lieu ou non.
