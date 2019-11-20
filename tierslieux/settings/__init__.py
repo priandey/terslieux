@@ -61,7 +61,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'tierslieux.wsgi.application'
 
 AUTH_USER_MODEL = "user.CustomUser"
-# TODO : Passer par les variables de conf pour importer les modèles entre les différentes applications
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators

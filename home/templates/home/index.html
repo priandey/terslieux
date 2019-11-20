@@ -10,36 +10,47 @@
 <body>
 <div  class="container">
     <div class="row" id="disclaimer_field">
-        <div style="background-color: #e9bc07; text-align:center" class="col-lg-12">
-        <nav class="row justify-content-between">
-        <div class="col-lg-1"><a href="{% url 'home' %}"><i class="fas fa-tree fa-3x"></i></a></div>
-        <div class="col-lg-3"><h1>Tiers-Lieux</h1></div>
-        <form action="{% url "search_location" %}" method="post" class="col-lg-4">
-                 {% csrf_token %}
-                 <input type="text" class="autocomplete form-control" name="research" placeholder="Chercher un lieu...">
-                 <input type="submit" hidden="true">
-        </form>
-        <div class="col-lg-2">
-            <table class="text-center">
-             {% if user.is_authenticated %}
-                <tr><th><a href="{% url 'private_locations' %}"><i class="fas fa-poll-h fa-2x"></i></a></th><th><a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt fa-2x"></i></a></th></tr>
-                <tr><th>Mes lieux</th><th>Déconnexion</th></tr>
-             {% else %}
-                <tr><th><a href="{% url 'login' %}"><i class="fas fa-sign-in-alt fa-2x"></i></a></th><th><a href="{% url 'signin' %}"><i class="fas fa-plus-circle fa-2x"></i></a></th></tr>
-                <tr><th>S'identifier</th><th>S'inscrire</th></tr>
-             {% endif %}
-            </table>
-        </div>
-    </nav>
-            {% block header %}{% endblock %}
+        <div style="text-align:center" class="col-lg-12">
+                <nav class="row justify-content-between">
+                <div class="col-lg-1"><a href="{% url 'home' %}"><i class="fas fa-tree fa-3x"></i></a></div>
+                <div class="col-lg-3"><h1>Tiers-Lieux</h1></div>
+                <form action="{% url "search_location" %}" method="post" class="col-lg-4">
+                         {% csrf_token %}
+                         <input type="text" class="autocomplete form-control" name="research" placeholder="Chercher un lieu...">
+                         <input type="submit" hidden="true">
+                </form>
+                <div class="col-lg-2">
+                    <table class="text-center">
+                     {% if user.is_authenticated %}
+                        <tr><th><a href="{% url 'private_locations' %}"><i class="fas fa-poll-h fa-2x"></i></a></th><th><a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt fa-2x"></i></a></th></tr>
+                        <tr><th>Mes lieux</th><th>Déconnexion</th></tr>
+                     {% else %}
+                        <tr><th><a href="{% url 'login' %}"><i class="fas fa-sign-in-alt fa-2x"></i></a></th><th><a href="{% url 'signin' %}"><i class="fas fa-plus-circle fa-2x"></i></a></th></tr>
+                        <tr><th>S'identifier</th><th>S'inscrire</th></tr>
+                     {% endif %}
+                    </table>
+                </div>
+            </nav>
+                    {% block header %}{% endblock %}
         </div>
     </div>
-    <div class="row" id="main_field">
+    <div class="row justify-content-around align-items-center first-row" id="main_field">
 
-        <div class="col-lg-8" style="background-color: #11899b">
-            {%  block content-left %}<h2>Les tiers-lieux en France</h2>{% endblock %}
+        <div class="col-lg-8 main-frame">
+            {%  block content-left %}<h2>Une beta vaut mieux que deux tu l'auras</h2>
+                <div class="col-lg-12">
+                    <p>Bienvenue sur la toute première version de Tiers-Lieux ! Le service est en construction,
+                        mais vous pouvez d'ores et déjà l'essayer. Pour cela, ils vous suffit de <a href="{% url 'signin' %}">créer un compte</a> </p>
+                    <p> Vous avec besoins d'un mode d'emploi ? <a href="https://github.com/priandey/tierslieux/blob/master/README.md">Visitez cette page</a>, qui détaillera les fonctionnalitées du service au fur et à
+                mesure qu'elles seront implémentées ! </p>
+                    <b>Gardez à l'esprit que tous vos retours nous permettront d'améliorer le service, ainsi n'hésitez pas à <a href="mailto:riandeypierre@gmail.com">nous contacter !</a></b>
+                </div>
+            {% endblock %}
         </div>
-        <div class="col-lg-4" style="background-color: #ba415f">
+        <div class="col-lg-4">
+            <img src="{% static 'home/img/beta_disclaimer.jpg' %}" class="w-50 h-50 illustration" />
+        </div>
+        <div class="col-lg-12 side-frame">
             {% block content-right %}
                 <h2>Lieux ouverts</h2>
             {% for location in opened_locations %}
