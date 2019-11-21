@@ -59,8 +59,8 @@
                 <div class="collapse" id="id{{status.pk}}">
                   <div class="card-body">
                     {% if status.description %}<p class="card-text"> {{ status.description }}</p>{% endif %}
-                    <p class="card-text"> Ouverture : {{ status.open_date|date:"l j F Y, G:s" }}</p>
-                     {% if status.close_date %}<p class="card-text"> Fermeture : {{ status.close_date|date:"l j F Y, G:s" }}</p>{% endif %}
+                    <p class="card-text"> Ouverture : {{ status.open_date }}</p>
+                     {% if status.close_date %}<p class="card-text"> Fermeture : {{ status.close_date }}</p>{% endif %}
                   </div>
                 </div>
               </div>
