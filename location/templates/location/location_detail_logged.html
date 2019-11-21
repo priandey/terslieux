@@ -34,6 +34,7 @@
 
 <div class="col-lg-6">
     <p>{{ location.description }}</p>
+    <p>Lien direct : {{ request.build_absolute_uri }}</p>
     <p>Modérateur : {{ location.moderator.email }}</p>
     <div>Bénévoles : <ul>{% for entry in location.volunteerbase_set.all %}
                 <li>{{ entry.volunteer.email }}</li>

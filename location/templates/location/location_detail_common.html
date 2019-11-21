@@ -4,6 +4,7 @@
 {% endblock %}
 {% block content-left %}
         {{ location.description }}
+        <p>Lien direct : {{ request.build_absolute_uri }}</p>
 {% endblock %}
 {% block content-right %}
         {%if statuses %} <!-- TODO : Add pagination for case of numerous statuses -->

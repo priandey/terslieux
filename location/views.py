@@ -1,6 +1,7 @@
-from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.http import HttpResponseForbidden
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.utils.text import slugify
 
 from userlocations.models import UserFavorite
 from .models import Location, Status, VolunteerBase, VolunteeringRequest
@@ -39,8 +40,9 @@ def location_creation(request):
     if form.is_valid():
         new_location = form.save(commit=False)
         new_location.moderator = request.user
+        new_location.slug = slugify(new_location.name)
         new_location.save()
-        response = redirect('private_locations')
+        response = redirect('location', slug=new_location.slug)
     else:
         response = render(request, 'location/location_creation.html', locals())
     return response
