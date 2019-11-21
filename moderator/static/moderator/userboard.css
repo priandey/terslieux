@@ -1,3 +1,7 @@
+body {
+    background-color: #bebebe;
+}
+
 td, th {
     text-align: center;
     border: 1px solid;
@@ -22,10 +26,13 @@ a:hover {
     padding-right: 2px;
     padding-left: 2px;
     width: 100% ;
+    border-radius: 0 0;
+    background-color: #9b2e11;
+    border:none;
 }
 
 .gmap {
-    background-color: chartreuse;
+    background-color: rgba(0, 201, 101, 0.57);
 }
 
 .card-header {
@@ -43,19 +50,23 @@ a:hover {
 }
 
 #top-menu {
-    background-color: aqua;
+    background-color: rgba(24, 129, 157, 0.90);
     padding: 1.2em 1.5em;
+    border-top-right-radius: 15px;
 }
 
 #side-menu {
-    background-color: #9b0000;
+    background-color: rgba(219, 57, 20, 0.90);
     min-height: 25em;
     padding:0 0;
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
 }
 
 #content {
-    background-color: bisque;
+    background-color: rgba(233, 188, 7, 0.90);
     padding : 2em 2em;
+    border-bottom-right-radius: 15px;
 }
 
 #delAccount {
