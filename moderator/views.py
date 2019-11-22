@@ -5,26 +5,43 @@ from django.core.exceptions import ObjectDoesNotExist
 from location.models import Location, VolunteerBase, VolunteeringRequest
 from user.models import CustomUser
 
+
 def volunteers(request, slug):
+    """
+    Collect every volunteers linked to the location and sort them in :
+        - validated (the volunteer is active and can open the location)
+        - required_by_mod (A request has been sent from the moderator to a user)
+        - required_by_vol (A request has been sent from a user to the moderator)
+
+    :param slug: Slug for the location
+    """
     location = Location.objects.get(slug=slug)
     if location.moderator == request.user:
-        volunteers = location.volunteerbase_set.all()
+        all_volunteers = location.volunteerbase_set.all()
         validated = list()
         required_by_mod = list()
         required_by_vol = list()
-        for volunteer in volunteers:
+        for volunteer in all_volunteers:
             if volunteer.volunteering_request.validated:
                 validated.append(volunteer)
-            elif volunteer.volunteering_request.validated == False:
+            elif not volunteer.volunteering_request.validated:
                 required_by_vol.append(volunteer)
             else:
                 required_by_mod.append(volunteer)
         response = render(request, "moderator/volunteers.html", locals())
     else:
-        response = HttpResponseForbidden()
+        response = HttpResponseForbidden("Vous n'êtes pas modérateur de ce lieu")
     return response
 
+
 def change_vol_status(request, slug, req_pk, status):
+    """
+    Allow moderator to validate a request from a user, or to remove a request.
+
+    :param slug: Slug for the location
+    :param req_pk: Primary key for the volunteering request
+    :param status: Status user wish to put on the volunteering_request
+    """
     location = Location.objects.get(slug=slug)
     if location.moderator == request.user:
         if status == "validated":
@@ -42,7 +59,13 @@ def change_vol_status(request, slug, req_pk, status):
         response = HttpResponseForbidden()
     return response
 
-def request_volunteer(request, slug): #TODO : Email activation à la création d'un compte bénévole
+
+def request_volunteer(request, slug):
+    """
+    Allow moderator to request volunteership to a user.
+    If user does not exist in database, moderator is sent to create a user
+    :param slug: Slug for the location
+    """
     location = Location.objects.get(slug=slug)
     if location.moderator == request.user:
         if request.method == 'POST':
@@ -67,10 +90,16 @@ def request_volunteer(request, slug): #TODO : Email activation à la création d
                 email = request.POST['email']
                 response = render(request, 'moderator/new_user.html', locals())
     else:
-        response = HttpResponseForbidden()
+        response = HttpResponseForbidden("Vous n'êtes pas modérateur de ce lieu")
+
     return response
 
-def mod_create_vol(request, slug):
+
+def mod_create_vol(request, slug):  # TODO : Email activation < Email backend + Change this into a usage of user signin form
+    """
+    Allow a moderator to create a new user.
+    :param slug: Slug for the location
+    """
     location = Location.objects.get(slug=slug)
     if location.moderator == request.user:
         if request.method == 'POST':
@@ -91,5 +120,5 @@ def mod_create_vol(request, slug):
             )
         response = redirect('volunteers_panel', slug=slug)
     else:
-        response = HttpResponseForbidden()
+        response = HttpResponseForbidden("Vous n'êtes pas modérateur de ce lieu")
     return response

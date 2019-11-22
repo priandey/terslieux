@@ -5,6 +5,9 @@ from location.models import Location, Status
 
 
 def home(request):
+    """
+    Render main page of the application
+    """
     locations = Location.objects.all()
     opened_locations = []
     for location in locations:
@@ -16,12 +19,15 @@ def home(request):
 
 
 def autocomplete(request):
+    """
+    Return a set of location matching term
+    """
     term = request.GET['term']
     location_propositions = []
     limit = 15
     incr = 0
 
-    for location in Location.objects.filter(name__contains=term):
+    for location in Location.objects.filter(name__icontains=term):
         location_propositions.append(location.name)
         incr += 1
         if incr >= limit:

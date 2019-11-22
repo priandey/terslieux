@@ -1,10 +1,12 @@
 from django.db import models
 from django.utils import timezone
-from django.urls import reverse
 from user.models import CustomUser
 
 
 class Location(models.Model):
+    """
+    A location
+    """
     name = models.CharField(max_length=255)
     description = models.TextField()
     volunteers = models.ManyToManyField(CustomUser, through='VolunteerBase', related_name="volunteers")
@@ -13,6 +15,9 @@ class Location(models.Model):
 
 
 class Status(models.Model):
+    """
+    Status represent an activity running in a location
+    """
     activity = models.CharField(max_length=255)
     description = models.TextField(null=True)
     open_date = models.DateTimeField(auto_now_add=True)
@@ -29,6 +34,9 @@ class Status(models.Model):
 
     @property
     def is_opened(self):
+        """
+        :return: True if status is currently running, False otherwise
+        """
         if not self.close_date:
             return True
         else:
@@ -36,6 +44,10 @@ class Status(models.Model):
 
     @property
     def open_time(self):
+        """
+        :return: Return a dict of data about time the status cover or false if
+        status is still open.
+        """
         if self.close_date:
             opened_time = self.close_date - self.open_date
             opened_time_seconds = opened_time.total_seconds()
@@ -51,7 +63,13 @@ class Status(models.Model):
         return response
 
 
-class VolunteeringRequest(models.Model): #TODO : Volunteer can volunteer twice in a location
+class VolunteeringRequest(models.Model):
+    """
+    VolunteeringRequest object represent a request of volunteership from one user to another
+
+    - validated = If the two users (sender/receiver) agree on the volunteership,
+    the request is considered validated.
+    """
     sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="request_sent")
     receiver = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="request_received")
     comment = models.CharField(max_length=255, null=True, default="Je souhaiterais être bénévole pour votre association")
@@ -60,12 +78,23 @@ class VolunteeringRequest(models.Model): #TODO : Volunteer can volunteer twice i
 
     @property
     def sender_is_mod(self):
+        """
+        :return: Return wheter sender user is moderator of the location or not
+        """
         if self.volunteer_base.get().location.moderator == self.sender:
             return True
         else:
             return False
 
 class VolunteerBase(models.Model):
+    """
+    VolunteerBase object represents a relation of volunteership between an user and a location.
+
+    - is_active : The volunteership can be active or not (eg: user has not been validated yet,
+    volunteership relation has ended, etc.)
+
+    - volunteering_request : Every volunteership relation begin with a request from one user to another.
+    """
     volunteer = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=False)

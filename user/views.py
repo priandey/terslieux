@@ -10,9 +10,9 @@ from .models import CustomUser
 
 
 def sign_in(request):
-    '''
-    Sign In view
-    '''
+    """
+        Sign in view
+    """
 
     form = SigninForm(request.POST or None)
     if form.is_valid():
@@ -34,9 +34,9 @@ def sign_in(request):
 
 
 def log_in(request):
-    '''
-    Log in view
-    '''
+    """
+    Log-in View
+    """
 
     form = SigninForm(request.POST or None)
 
@@ -54,9 +54,9 @@ def log_in(request):
 
 
 def log_out(request):
-    '''
-    Log out view
-    '''
+    """
+    Logout view
+    """
 
     logout(request)
     return redirect("home")
@@ -64,11 +64,17 @@ def log_out(request):
 
 @login_required(login_url='/user/login/')
 def profile(request):
+    """
+    Return user data
+    """
     return render(request, "user/userprofile.html", locals())
 
 
 @login_required(login_url='/user/login/')
 def edit_profile(request):
+    """
+    Allow user to change his password (and future account related data)
+    """
     user = request.user
     if request.method == 'POST':
         form = EditProfileForm(request.POST)
@@ -88,6 +94,9 @@ def edit_profile(request):
 
 @login_required(login_url='/user/login')
 def delete_profile(request):
+    """
+    Allow user to delete his account.
+    """
     if request.method == 'POST':
         user = request.user.pk
         logout(request)

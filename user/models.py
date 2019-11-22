@@ -32,9 +32,9 @@ class UserManager(BaseUserManager):
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
-    '''
+    """
     User model with email instead of username/pseudo.
-    '''
+    """
 
     email = models.EmailField(verbose_name=_('email'), unique=True)
     date_joined = models.DateTimeField(

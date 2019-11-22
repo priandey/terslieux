@@ -40,7 +40,7 @@ class TestHomeViews(TestCase):
         response = self.client.get('/autocomplete/', data={'term': 'verte'})
         self.assertJSONEqual(str(response.content, encoding='utf8'), [self.location.name,])
 
-    def test_autocomplete_with_prop(self):
+    def test_autocomplete_without_prop(self):
         """ Testing view without matching input """
         response = self.client.get('/autocomplete/', data={'term': 'gloub'})
         self.assertJSONEqual(str(response.content, encoding='utf8'), [])

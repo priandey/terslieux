@@ -137,7 +137,6 @@ class TestLocationView(TestCase):
         }
         response = self.client.post('/l/search', data=post_data)
         self.assertEqual(response.status_code, 301)
-        # TODO : Check with test_location_creation_post_valid for response.url
 
     def test_edit_location_legal_get(self):
         self.client.login(email='mod@mod.mod', password='password')

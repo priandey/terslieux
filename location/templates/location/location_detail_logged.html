@@ -11,7 +11,7 @@
 
 {% block subtitle %}
     {% if user.is_authenticated %}
-        {% if disclaimer %}
+        {% if disclaimer %} <!-- TODO : Need to rework volunteering related information in view  ~30%-->
              <b>{{ disclaimer }}</b>
              {% if location_mod %}
                 <a href="{% url 'volunteers_panel' location.slug %}" class="btn btn-secondary">Panneau de modération</a>
@@ -19,13 +19,14 @@
             {% if opened %}
             <a href="{% url 'close_status' location.slug %}" class="btn btn-secondary">Fermer le lieu
             </a>
-        {% else %} <!--TODO : "Ouvrir le lieu" proposé pour les volunteers en attente d'acceptation -->
-             <a href="{% url 'add_status' location.slug %}" class="btn btn-secondary">Ouvrir le lieu</a>
-         {% endif %}
+            {% elif validated %}
+                 <a href="{% url 'add_status' location.slug %}" class="btn btn-secondary">Ouvrir le lieu</a>
+             {% endif %}
+        {% elif not_validated %}
         {% else %}
             <a href="{% url 'require_volunteering' location.slug %}" class="btn btn-secondary">
                 Proposer d'être bénévole
-             </a>
+            </a>
         {% endif %}
     {% endif %}
 {% endblock %}
