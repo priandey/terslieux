@@ -24,7 +24,7 @@ def volunteers(request, slug):
         for volunteer in all_volunteers:
             if volunteer.volunteering_request.validated:
                 validated.append(volunteer)
-            elif not volunteer.volunteering_request.validated:
+            elif volunteer.volunteering_request.validated == False:
                 required_by_vol.append(volunteer)
             else:
                 required_by_mod.append(volunteer)

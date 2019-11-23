@@ -19,19 +19,20 @@ class TestModeratorView(TestCase):
                 slug="baleine")
 
         # Creating 3 differents volunteer's request
-        self.validated_vol_request = VolunteeringRequest.objects.create( # Validated volunteer
+        self.validated_vol_request = VolunteeringRequest.objects.create(  # Validated volunteer
                 sender=self.moderator,
                 receiver=self.volunteer,
                 validated=True
         )
-        self.pending_vol_request = VolunteeringRequest.objects.create( # Pending volunteer
+        self.pending_vol_request = VolunteeringRequest.objects.create(  # Pending volunteer
                 sender=self.moderator,
                 receiver=self.pending_vol,
                 validated=False
         )
-        self.requested_vol_request = VolunteeringRequest.objects.create( # Requested volunteer
+        self.requested_vol_request = VolunteeringRequest.objects.create(  # Requested volunteer
                 sender=self.moderator,
-                receiver=self.requested_vol
+                receiver=self.requested_vol,
+                validated=None
         )
 
         # Creating 3 differents entry for volunteers
@@ -53,7 +54,6 @@ class TestModeratorView(TestCase):
                 is_active=False,
                 volunteering_request=self.requested_vol_request
         )
-
 
     def test_volunteers_legal_get(self):
         self.client.login(email="mod@mod.mod", password="password")
