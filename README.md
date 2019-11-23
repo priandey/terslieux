@@ -32,7 +32,7 @@ S'affiche un récapitulatif des bénévoles liées au lieu, ainsi que des diffé
 
 En **1** :  Tout les bénévoles actifs du lieu.
 
-En **2** : Une liste des bénévoles ayant demandé à être bénévoles.
+En **2** : Une liste des utilisateurs ayant demandé à être bénévoles.
 
 En **3** : Les invitations que vous avez envoyé.
 
