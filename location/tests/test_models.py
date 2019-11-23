@@ -38,8 +38,6 @@ class TestStatus(TestCase):
         self.status.close()
         self.assertTrue(self.status.open_time)
 
-    def test_open_time_illegal(self):
-        self.assertFalse(self.status.open_time)
 
 class TestVolunteeringRequest(TestCase):
     """ Test core method of VolunteeringRequest model """

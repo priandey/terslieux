@@ -34,16 +34,11 @@
 {% block content %}
 
 <div class="col-lg-6">
+    {% if opened %}<h2>Ce lieu est ouvert !</h2>{% endif %}
     <p>{{ location.description }}</p>
     <p>Lien direct : {{ request.build_absolute_uri }}</p>
     <p>Modérateur : {{ location.moderator.email }}</p>
-    <div>Bénévoles : <ul>{% for entry in location.volunteerbase_set.all %}
-                <li>{{ entry.volunteer.email }}</li>
-            {% if entry.volunteering_request.validated != True %}
-        <b>Demande de confirmation</b>
-            {% endif %}
-        {% endfor %}</ul>
-    </div>
+
     </div>
 <div class="col-lg-6 justify-content-center gmap">Interactive Map placeholder / WiP</div>
 

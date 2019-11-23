@@ -3,6 +3,7 @@
     {{ location.name }}
 {% endblock %}
 {% block content-left %}
+        {% if opened %}<h2>Ce lieu est ouvert !</h2>{% endif %}
         {{ location.description }}
         <p>Lien direct : {{ request.build_absolute_uri }}</p>
 {% endblock %}

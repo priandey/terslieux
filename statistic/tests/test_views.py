@@ -40,10 +40,10 @@ class TestStatisticViews(TestCase):
 
     def test_generate_pdf_legal(self):
         self.client.login(email="mod@mod.mod", password="password")
-        response = self.client.get('/statistic/baleine')
+        response = self.client.get('/statistic/pdf/baleine')
         self.assertEqual(response.status_code, 200)
 
     def test_generate_pdf_illegal(self):
         self.client.login(email='basic@basic.basic', password='password')
-        response = self.client.get('/statistic/baleine')
+        response = self.client.get('/statistic/pdf/baleine')
         self.assertEqual(response.status_code, 403)

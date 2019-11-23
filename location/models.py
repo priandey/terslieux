@@ -45,21 +45,22 @@ class Status(models.Model):
     @property
     def open_time(self):
         """
-        :return: Return a dict of data about time the status cover or false if
-        status is still open.
+        :return: Return a dict of data about time the status cover. If status
+        is still running, return open time from open date until now.
         """
         if self.close_date:
             opened_time = self.close_date - self.open_date
-            opened_time_seconds = opened_time.total_seconds()
-            ot_hours = int(opened_time_seconds // 3600)
-            ot_rest = opened_time_seconds % 3600
-            ot_minutes = int(ot_rest // 60)
-            response = {
-                'total_seconds': opened_time_seconds,
-                'pretty': '{} hours, {} minutes'.format(ot_hours, ot_minutes)
-            }
         else:
-            response = False
+            opened_time = timezone.now() - self.open_date
+
+        opened_time_seconds = opened_time.total_seconds()
+        ot_hours = int(opened_time_seconds // 3600)
+        ot_rest = opened_time_seconds % 3600
+        ot_minutes = int(ot_rest // 60)
+        response = {
+            'total_seconds': opened_time_seconds,
+            'pretty'       : '{} hours, {} minutes'.format(ot_hours, ot_minutes)
+        }
         return response
 
 
