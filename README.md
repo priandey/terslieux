@@ -14,7 +14,7 @@ aux associations ou entreprises en charge des lieux de garder trace de ces ouver
 Vous pouvez enregistrer un lieu sur le service en cliquant sur le bouton « + » de votre interface
 utilisateur.
 
-<< Insérer image de l'interface >>
+![Ajouter une localisation](https://github.com/priandey/tierslieux/blob/dev/tutorial/img/add_location.jpg)
 
 L'utilisateur ayant référencé un lieu devient automatiquement le modérateur de ce dernier. 
 
@@ -24,11 +24,11 @@ L'utilisateur ayant référencé un lieu devient automatiquement le modérateur 
 Les bénévoles et les modérateurs sont les seuls utilisateur à pouvoir déclarer un lieu ouvert. 
 Pour gérer les bénévole, cliquez sur le Panneau de modération depuis la page du lieu.
 
-<< IMAGE >>
+![Ouvrir le panneau de modération](https://github.com/priandey/tierslieux/blob/dev/tutorial/img/moderator_pannel.jpg)
 
 S'affiche un récapitulatif des bénévoles liées au lieu, ainsi que des différentes demandes en cours. 
 
-<< IMAGE >>
+![Détail de la gestion des bénévoles](https://github.com/priandey/tierslieux/blob/dev/tutorial/img/volunteers_pannel.jpg)
 
 En **1** :  Tout les bénévoles actifs du lieu.
 
