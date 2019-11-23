@@ -37,7 +37,7 @@
     {% if opened %}<h2>Ce lieu est ouvert !</h2>{% endif %}
     <p>{{ location.description }}</p>
     <p>Lien direct : {{ request.build_absolute_uri }}</p>
-    <p>Modérateur : {{ location.moderator.email }}</p>
+    <p>Modérateur : {{ location.moderator.username }}</p>
 
     </div>
 
