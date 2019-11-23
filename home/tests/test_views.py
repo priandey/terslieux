@@ -6,8 +6,8 @@ from user.models import CustomUser
 
 class TestHomeViews(TestCase):
     def setUp(self):
-        self.moderator = CustomUser.objects.create_user(email="mod@mod.mod", password="password")
-        self.volunteer = CustomUser.objects.create_user(email="vol@vol.vol", password="password")
+        self.moderator = CustomUser.objects.create_user(username="mod@mod.mod", password="password")
+        self.volunteer = CustomUser.objects.create_user(username="vol@vol.vol", password="password")
 
         self.location = Location.objects.create(
                 name="La baleine verte",

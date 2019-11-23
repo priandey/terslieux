@@ -16,17 +16,17 @@ def sign_in(request):
 
     form = SigninForm(request.POST or None)
     if form.is_valid():
-        email = form.cleaned_data['email']
+        username = form.cleaned_data['username']
         password = form.cleaned_data['password']
         try:
-            new_user = CustomUser.objects.create_user(email, password)
+            new_user = CustomUser.objects.create_user(username, password)
             new_user.save()
             if not isinstance(request.user, AnonymousUser):
-                user = authenticate(request, username=email, password=password)
+                user = authenticate(request, username=username, password=password)
                 login(request, user)
             return redirect('home')
         except IntegrityError:
-            duplicate_email = True
+            duplicate_username = True
     else:
         validForm = False
 
@@ -41,9 +41,9 @@ def log_in(request):
     form = SigninForm(request.POST or None)
 
     if form.is_valid():
-        email = form.cleaned_data['email']
+        username = form.cleaned_data['username']
         password = form.cleaned_data['password']
-        user = authenticate(request, username=email, password=password)
+        user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request=request, user=user)
             return redirect("private_locations")

@@ -7,8 +7,8 @@ class TestStatus(TestCase):
     """ Test core methods of Status model """
 
     def setUp(self):
-        self.moderator = CustomUser.objects.create_user(email="mod@mod.mod", password="password")
-        self.volunteer = CustomUser.objects.create_user(email="vol@vol.vol", password="password")
+        self.moderator = CustomUser.objects.create_user(username="mod@mod.mod", password="password")
+        self.volunteer = CustomUser.objects.create_user(username="vol@vol.vol", password="password")
 
         self.location = Location.objects.create(
                 name="La baleine verte",
@@ -43,8 +43,8 @@ class TestVolunteeringRequest(TestCase):
     """ Test core method of VolunteeringRequest model """
 
     def setUp(self):
-        self.moderator = CustomUser.objects.create_user(email="mod@mod.mod", password="password")
-        self.basic_user = CustomUser.objects.create_user(email="basic@basic.basic", password="password")
+        self.moderator = CustomUser.objects.create_user(username="mod@mod.mod", password="password")
+        self.basic_user = CustomUser.objects.create_user(username="basic@basic.basic", password="password")
 
         self.location = Location.objects.create(
                 name="La baleine verte",

@@ -71,7 +71,7 @@ def request_volunteer(request, slug):
         if request.method == 'POST':
             requesting_user = location.moderator
             try:
-                receiver = CustomUser.objects.get(email=request.POST['email'])
+                receiver = CustomUser.objects.get(username=request.POST['username'])
 
                 sent_request = VolunteeringRequest.objects.create(
                         sender=requesting_user,
@@ -87,7 +87,7 @@ def request_volunteer(request, slug):
 
                 response = redirect('volunteers_panel', slug=slug)
             except ObjectDoesNotExist:
-                email = request.POST['email']
+                username = request.POST['username']
                 response = render(request, 'moderator/new_user.html', locals())
     else:
         response = HttpResponseForbidden("Vous n'êtes pas modérateur de ce lieu")
@@ -95,7 +95,7 @@ def request_volunteer(request, slug):
     return response
 
 
-def mod_create_vol(request, slug):  # TODO : Email activation < Email backend + Change this into a usage of user signin form
+def mod_create_vol(request, slug):  # TODO : username activation < username backend + Change this into a usage of user signin form
     """
     Allow a moderator to create a new user.
     :param slug: Slug for the location
