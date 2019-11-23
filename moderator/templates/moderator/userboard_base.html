@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Panneau de modération</title>
+    <link rel="icon" href="{% static 'home/favicon.ico' %}" />
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://kit.fontawesome.com/053139c009.js" crossorigin="anonymous"></script>
     <link href="{% static 'moderator/userboard.css' %}" rel="stylesheet">
@@ -14,8 +15,9 @@
             <div class="col-lg-2" id="side-menu">
                 <div class="row justify-content-around align-items-center">
                     <div class="col-lg-3"><i class="fas fa-user-circle fa-3x user-avatar"></i></div>
-                    <div class="col-lg-8">{{user.email}}</div>
+                    <div class="col-lg-8">{{user.username}}</div>
                     <div class="col-lg-12"><a href="{% url 'logout' %}" class="btn btn-primary btn-side-menu">Déconnexion</a></div>
+                    <div class="col-lg-12"><a href="{% url 'home' %}" class="btn btn-primary btn-side-menu">Accueil</a></div>
                 </div>
                 <hr class="my-2" />
                 <div class="row">
@@ -30,7 +32,7 @@
             <div class="col-lg-10">
                 <div class="row align-items-center" id="top-menu">
                     <div class="col-lg-10">
-                        <h1>{% block title %} Interface de {{user.email}} {% endblock %}</h1>
+                        <h1>{% block title %} Interface de {{user.username}} {% endblock %}</h1>
                         <h4>{% block subtitle %}{% endblock %}</h4>
                     </div>
                 </div>

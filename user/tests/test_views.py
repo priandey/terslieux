@@ -4,7 +4,7 @@ from user.models import CustomUser
 
 class TestUserViews(TestCase):
     def setUp(self):
-        self.user = CustomUser.objects.create_user(email="user@user.user", password="password")
+        self.user = CustomUser.objects.create_user(username="user@user.user", password="password")
 
     def test_sign_in_get(self):
         response = self.client.get('/user/signin/')
@@ -13,7 +13,7 @@ class TestUserViews(TestCase):
 
     def test_sign_in_post_valid_form(self):
         form_data = {
-            'email': 'newUser@newUser.new',
+            'username': 'newUser@newUser.new',
             'password': 'password'
         }
         response = self.client.post('/user/signin/', data=form_data)
@@ -21,11 +21,11 @@ class TestUserViews(TestCase):
 
     def test_sign_in_post_invalid_form(self):
         form_data = {
-            'email'   : 'user@user.user',
+            'username'   : 'user@user.user',
             'password': 'password'
         }
         response = self.client.post('/user/signin/', data=form_data)
-        self.assertTrue(response.context['duplicate_email'])
+        self.assertTrue(response.context['duplicate_username'])
 
     def test_log_in_get(self):
         response = self.client.get('/user/login/')
@@ -35,7 +35,7 @@ class TestUserViews(TestCase):
 
     def test_log_in_post_valid(self):
         form_data = {
-            'email': 'user@user.user',
+            'username': 'user@user.user',
             'password': 'password'
         }
         response = self.client.post('/user/login/', data=form_data)
@@ -43,25 +43,25 @@ class TestUserViews(TestCase):
 
     def test_log_in_post_invalid(self):
         form_data = {
-            'email': 'youser@yuser.user',
+            'username': 'youser@yuser.user',
             'password': 'password'
         }
         response = self.client.post('/user/login/', data=form_data)
         self.assertFalse(response.context['logged'])
 
     def test_profile(self):
-        self.client.login(email='user@user.user', password='password')
+        self.client.login(username='user@user.user', password='password')
         response = self.client.get('/user/profile/')
         self.assertTemplateUsed(response, 'user/userprofile.html')
 
     def test_edit_profile_get(self):
-        self.client.login(email='user@user.user', password='password')
+        self.client.login(username='user@user.user', password='password')
         response = self.client.get('/user/editprofile/')
         self.assertTemplateUsed(response, 'user/edit_profile.html')
         self.assertTrue(response.context['form'])
 
     def test_edit_profile_post_valid(self):
-        self.client.login(email='user@user.user', password='password')
+        self.client.login(username='user@user.user', password='password')
         form_data = {
             'password': 'anotherpassword'
         }
@@ -69,7 +69,7 @@ class TestUserViews(TestCase):
         self.assertEqual(response.status_code, 302)
 
     def test_edit_profile_invalid(self):
-        self.client.login(email='user@user.user', password='password')
+        self.client.login(username='user@user.user', password='password')
         form_data = {
             'password': ''
         }
@@ -78,6 +78,6 @@ class TestUserViews(TestCase):
         self.assertTrue(response.context['error'])
 
     def test_delete_profile(self):
-        self.client.login(email="user@user.user", password="password")
+        self.client.login(username="user@user.user", password="password")
         response = self.client.post('/user/delprofile/')
         self.assertEqual(response.status_code, 301)

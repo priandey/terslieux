@@ -1,7 +1,7 @@
 {% extends "moderator/userboard_base.html" %}
 {% block content %}
     <div class="col-lg-12 justify-content-center">
-        <form action="/l/create/" method="post">
+        <form action="{% url 'create_loc' %}" method="post">
                 {% csrf_token %}
                 {{ form.as_p }}
             <input type="submit" value="Créer un lieu"  class="btn btn-secondary"/>

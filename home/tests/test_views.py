@@ -6,8 +6,8 @@ from user.models import CustomUser
 
 class TestHomeViews(TestCase):
     def setUp(self):
-        self.moderator = CustomUser.objects.create_user(email="mod@mod.mod", password="password")
-        self.volunteer = CustomUser.objects.create_user(email="vol@vol.vol", password="password")
+        self.moderator = CustomUser.objects.create_user(username="mod@mod.mod", password="password")
+        self.volunteer = CustomUser.objects.create_user(username="vol@vol.vol", password="password")
 
         self.location = Location.objects.create(
                 name="La baleine verte",
@@ -40,7 +40,7 @@ class TestHomeViews(TestCase):
         response = self.client.get('/autocomplete/', data={'term': 'verte'})
         self.assertJSONEqual(str(response.content, encoding='utf8'), [self.location.name,])
 
-    def test_autocomplete_with_prop(self):
+    def test_autocomplete_without_prop(self):
         """ Testing view without matching input """
         response = self.client.get('/autocomplete/', data={'term': 'gloub'})
         self.assertJSONEqual(str(response.content, encoding='utf8'), [])

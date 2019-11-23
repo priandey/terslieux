@@ -11,7 +11,7 @@
 
 {% block subtitle %}
     {% if user.is_authenticated %}
-        {% if disclaimer %}
+        {% if disclaimer %} <!-- TODO : Need to rework volunteering related information in view  ~30%-->
              <b>{{ disclaimer }}</b>
              {% if location_mod %}
                 <a href="{% url 'volunteers_panel' location.slug %}" class="btn btn-secondary">Panneau de modération</a>
@@ -19,13 +19,14 @@
             {% if opened %}
             <a href="{% url 'close_status' location.slug %}" class="btn btn-secondary">Fermer le lieu
             </a>
-        {% else %} <!--TODO : "Ouvrir le lieu" proposé pour les volunteers en attente d'acceptation -->
-             <a href="{% url 'add_status' location.slug %}" class="btn btn-secondary">Ouvrir le lieu</a>
-         {% endif %}
+            {% elif validated %}
+                 <a href="{% url 'add_status' location.slug %}" class="btn btn-secondary">Ouvrir le lieu</a>
+             {% endif %}
+        {% elif not_validated %}
         {% else %}
             <a href="{% url 'require_volunteering' location.slug %}" class="btn btn-secondary">
                 Proposer d'être bénévole
-             </a>
+            </a>
         {% endif %}
     {% endif %}
 {% endblock %}
@@ -33,16 +34,11 @@
 {% block content %}
 
 <div class="col-lg-6">
+    {% if opened %}<h2>Ce lieu est ouvert !</h2>{% endif %}
     <p>{{ location.description }}</p>
     <p>Lien direct : {{ request.build_absolute_uri }}</p>
     <p>Modérateur : {{ location.moderator.email }}</p>
-    <div>Bénévoles : <ul>{% for entry in location.volunteerbase_set.all %}
-                <li>{{ entry.volunteer.email }}</li>
-            {% if entry.volunteering_request.validated != True %}
-        <b>Demande de confirmation</b>
-            {% endif %}
-        {% endfor %}</ul>
-    </div>
+
     </div>
 <div class="col-lg-6 justify-content-center gmap">Interactive Map placeholder / WiP</div>
 
