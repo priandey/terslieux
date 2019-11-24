@@ -18,7 +18,7 @@
         </tr>
         {% for volunteer in validated %}
             <tr>
-                <td>{{ volunteer.volunteer.email}}</td>
+                <td>{{ volunteer.volunteer.username}}</td>
                 <td>{{ volunteer.volunteering_request.date }}</td>
                 <td>{{ volunteer.is_active }}</td>
                 <td><a href="{% url 'validate' location.slug volunteer.volunteering_request.pk 'remove' %}">OUI</a></td>
@@ -38,7 +38,7 @@
         </tr>
         {% for volunteer in required_by_vol %}
             <tr>
-                <td>{{ volunteer.volunteer.email}}</td>
+                <td>{{ volunteer.volunteer.username}}</td>
                 <td><a href="{% url 'validate' location.slug volunteer.volunteering_request.pk 'validated' %}">OUI</a></td>
                 <td><a href="{% url 'validate' location.slug volunteer.volunteering_request.pk 'remove' %}">NON</a></td>
             </tr>
@@ -57,7 +57,7 @@
         </tr>
         {% for volunteer in required_by_mod %}
             <tr>
-                <td>{{ volunteer.volunteer.email}}</td>
+                <td>{{ volunteer.volunteer.username}}</td>
                 <td>{{ volunteer.volunteering_request.date }}</td>
                 <td><a href="{% url 'validate' location.slug volunteer.volunteering_request.pk 'remove' %}">OUI</a></td>
             </tr>
@@ -71,8 +71,8 @@
 </table>
 
     <form action="{% url 'new_vol' location.slug %}" method="post">
-        <label about="email">Email du bénévole</label>
-    <input type="text" name="email"/>
+        <label about="username">username du bénévole</label>
+    <input type="text" name="username"/>
       {% if no_user %}
       <input type="text" value="Mot de passe" name="password" />
       {% endif %}
