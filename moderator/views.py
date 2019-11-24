@@ -86,7 +86,7 @@ def request_volunteer(request, slug):
                 )  # Creating a new entry for the location in the volunteer base
 
                 response = redirect('volunteers_panel', slug=slug)
-            except ObjectDoesNotExist:
+            except ObjectDoesNotExist:  # TODO should send user SigninForm to locals
                 username = request.POST['username']
                 response = render(request, 'moderator/new_user.html', locals())
     else:
