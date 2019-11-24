@@ -9,7 +9,7 @@
     <h2>Création d'un utilisateur</h2>
     <p> Notez bien le mot de passe afin de le communiquer, vous ne pourrez pas le récupérer !</p>
     <form action="{% url 'mod_create_vol' location.slug%}" method="post">
-        <label about="mail">Email</label> <input type="text" name="mail" />
+        <label about="username">Nom d'utilisateur</label> <input type="text" name="username" />
         <label about="password">Mot de Passe</label> <input type="text" name="password" />
         {% csrf_token %}
         <input type="submit" value="Créer un utilisateur">
