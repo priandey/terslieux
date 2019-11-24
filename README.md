@@ -9,6 +9,7 @@ l'ouverture d'un lieu. Elle permet d'une part de publier l'information auprès d
 aux associations ou entreprises en charge des lieux de garder trace de ces ouvertures.
 
 ## Un tour du propriétaire
+###[Les différents utilisateurs](https://github.com/priandey/tierslieux/blob/dev/tutorial/Parcours%20utilisateurs.md)
 ### Les fonctionalitées implémentées :
 #### Référencement d'un lieu
 Vous pouvez enregistrer un lieu sur le service en cliquant sur le bouton « + » de votre interface
