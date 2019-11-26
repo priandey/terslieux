@@ -81,7 +81,7 @@ def request_volunteer(request, slug):
                 VolunteerBase.objects.create(
                         volunteer=receiver,
                         location=location,
-                        is_active=False,
+                        is_active=True,
                         volunteering_request=sent_request
                 )  # Creating a new entry for the location in the volunteer base
 
@@ -104,7 +104,7 @@ def mod_create_vol(request, slug):  # TODO : username activation < username back
     if location.moderator == request.user:
         if request.method == 'POST':
             requesting_user = location.moderator
-            receiver = CustomUser.objects.create_user(request.POST['mail'], request.POST['password'])
+            receiver = CustomUser.objects.create_user(request.POST['username'], request.POST['password'])
             receiver.save()
 
             sent_request = VolunteeringRequest.objects.create(
@@ -115,7 +115,7 @@ def mod_create_vol(request, slug):  # TODO : username activation < username back
             VolunteerBase.objects.create(
                     volunteer=receiver,
                     location=location,
-                    is_active=False,
+                    is_active=True,
                     volunteering_request=sent_request
             )
         response = redirect('volunteers_panel', slug=slug)

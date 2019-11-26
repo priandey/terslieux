@@ -38,7 +38,7 @@ def add_favorite(request, slug):
 
 def accept_volunteering(request, pk):
     """
-    Allow user to accep a volunteering request from a moderator
+    Allow user to accept a volunteering request from a moderator
     :param pk: Primary key of the volunteering request
     """
     req = VolunteeringRequest.objects.get(pk=pk)
