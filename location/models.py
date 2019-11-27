@@ -87,6 +87,14 @@ class VolunteeringRequest(models.Model):
         else:
             return False
 
+    def validate(self):
+        self.validated = True
+        self.save()
+        activity = self.volunteer_base.get().is_active
+        activity = True
+        activity.save()
+
+
 class VolunteerBase(models.Model):
     """
     VolunteerBase object represents a relation of volunteership between an user and a location.

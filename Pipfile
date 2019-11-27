@@ -10,6 +10,7 @@ coverage = "*"
 django = "==2.2.7"
 weasyprint = "*"
 psycopg2 = "*"
+djangorestframework = "==3.10.3"
 
 [requires]
 python_version = "3.7"
