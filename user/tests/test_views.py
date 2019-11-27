@@ -1,10 +1,10 @@
 from django.test import TestCase
 
-from user.models import CustomUser
+from django.contrib.auth.models import User
 
 class TestUserViews(TestCase):
     def setUp(self):
-        self.user = CustomUser.objects.create_user(username="user@user.user", password="password")
+        self.user = User.objects.create_user(username="user@user.user", password="password")
 
     def test_sign_in_get(self):
         response = self.client.get('/user/signin/')

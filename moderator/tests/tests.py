@@ -1,15 +1,15 @@
 from django.test import TestCase
 
-from user.models import CustomUser
+from django.contrib.auth.models import User
 from location.models import VolunteeringRequest, VolunteerBase, Location
 
 class TestModeratorView(TestCase):
     def setUp(self):
-        self.moderator = CustomUser.objects.create_user(username="mod@mod.mod", password="password")
-        self.basic_user = CustomUser.objects.create_user(username="basic@basic.basic", password="password")
-        self.volunteer = CustomUser.objects.create_user(username="vol@vol.vol", password="password")
-        self.pending_vol = CustomUser.objects.create_user(username="pvol@pvol.pvol", password="password")
-        self.requested_vol = CustomUser.objects.create_user(username="reqvol@reqvol.reqvol", password="password")
+        self.moderator = User.objects.create_user(username="mod@mod.mod", password="password")
+        self.basic_user = User.objects.create_user(username="basic@basic.basic", password="password")
+        self.volunteer = User.objects.create_user(username="vol@vol.vol", password="password")
+        self.pending_vol = User.objects.create_user(username="pvol@pvol.pvol", password="password")
+        self.requested_vol = User.objects.create_user(username="reqvol@reqvol.reqvol", password="password")
 
         # Creating location
         self.location = Location.objects.create(

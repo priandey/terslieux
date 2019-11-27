@@ -1,7 +1,6 @@
 from django.db import models
 from django.utils import timezone
-from user.models import CustomUser
-
+from django.contrib.auth.models import User
 
 class Location(models.Model):
     """
@@ -9,8 +8,8 @@ class Location(models.Model):
     """
     name = models.CharField(max_length=255)
     description = models.TextField()
-    volunteers = models.ManyToManyField(CustomUser, through='VolunteerBase', related_name="volunteers")
-    moderator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="location")
+    volunteers = models.ManyToManyField(User, through='VolunteerBase', related_name="volunteers")
+    moderator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="location_moderator")
     slug = models.SlugField(unique=True)
 
 
@@ -22,8 +21,8 @@ class Status(models.Model):
     description = models.TextField(null=True)
     open_date = models.DateTimeField(auto_now_add=True)
     close_date = models.DateTimeField(null=True)
-    volunteer = models.ForeignKey(CustomUser, related_name='opened', on_delete=models.SET_NULL, null=True)
-    location = models.ForeignKey(Location, related_name='status', on_delete=models.CASCADE)
+    volunteer = models.ForeignKey(User, related_name='opened', on_delete=models.SET_NULL, null=True)
+    location = models.ForeignKey(Location, related_name='statuses', on_delete=models.CASCADE)
 
     def __repr__(self):
         return f'{self.activity} at {self.open_date}'
@@ -71,8 +70,8 @@ class VolunteeringRequest(models.Model):
     - validated = If the two users (sender/receiver) agree on the volunteership,
     the request is considered validated.
     """
-    sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="request_sent")
-    receiver = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="request_received")
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name="request_sent")
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name="request_received")
     comment = models.CharField(max_length=255, null=True, default="Je souhaiterais être bénévole pour votre association")
     validated = models.BooleanField(null=True)
     date = models.DateTimeField(auto_now_add=True)
@@ -104,7 +103,7 @@ class VolunteerBase(models.Model):
 
     - volunteering_request : Every volunteership relation begin with a request from one user to another.
     """
-    volunteer = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    volunteer = models.ForeignKey(User, on_delete=models.CASCADE)
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=False)
     volunteering_request = models.ForeignKey(VolunteeringRequest, on_delete=models.CASCADE, related_name="volunteer_base")

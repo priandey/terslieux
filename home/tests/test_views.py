@@ -1,8 +1,7 @@
 from django.test import TestCase
 
 from location.models import Location, Status
-from user.models import CustomUser
-
+from django.contrib.auth.models import User
 
 class TestHomeViews(TestCase):
     def setUp(self):

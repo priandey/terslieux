@@ -1,12 +1,13 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import AnonymousUser
-from django.db.utils import IntegrityError
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login, logout
+from rest_framework import viewsets
+from django.contrib.auth.models import User
+from user.serializers import UserSerializer
 
-from .forms import SigninForm, EditProfileForm
-from .models import CustomUser
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Provide 'list'  and 'details' actions over user resources
+    """
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 
 """

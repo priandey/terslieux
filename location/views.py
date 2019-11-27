@@ -1,59 +1,41 @@
-from rest_framework import status
-from rest_framework import mixins
-from rest_framework import generics
-from rest_framework.views import APIView
+from rest_framework import viewsets
+from rest_framework import permissions
+from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 
-from django.http import Http404
-
 from location.models import Location, Status
-from location.serializers import LocationSerializer
+from location.permissions import IsModeratorOrReadOnly
+from location.serializers import LocationSerializer, StatusSerializer
 
-class LocationList(APIView):
+
+class MultiSerializerViewSet(viewsets.ModelViewSet):
     """
-    List all locations, or create a new one
+    Provide the correct serializer
     """
+    serializers = {
+        'default': None,
+    }
 
-    def get(self, request, format=None):
-        locations = Location.objects.all()
-        serializer = LocationSerializer(locations, many=True)
-        return Response(serializer.data)
-
-    def post(self, request, format=None):
-        serializer = LocationSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def get_serializer(self, *args, **kwargs):
+        return self.serializers.get(self.action, self.serializers['default'])
 
 
-class LocationDetail(APIView):
+class LocationViewSet(MultiSerializerViewSet):
     """
-    Retrieve, update or delete location instance
+    Provide 'list', 'create', 'retrieve', 'update' and 'destroy' actions
     """
-    def get_location(self, slug):
-        try:
-            return Location.objects.get(slug=slug)
-        except:
-            raise Http404
+    model = Location
+    serializers = {
+        'list': LocationSerializer,
+        'detail': StatusSerializer
+    }
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly,
+                          IsModeratorOrReadOnly]
 
-    def get(self, request, slug, format=None):
-        location = self.get_location(slug)
-        serializer = LocationSerializer(location)
-        return Response(serializer.data)
+    def perform_create(self, serializer):
+        serializer.save(moderator=self.request.user)
 
-    def put(self, request, slug, format=None):
-        location = self.get_location(slug)
-        serializer = LocationSerializer(location, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, slug, format=None):
-        location = self.get_location(slug)
-        location.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    def get_queryset(self):
 
 """
 Views that return main public informations about a given location
