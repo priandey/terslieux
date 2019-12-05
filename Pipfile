@@ -7,7 +7,7 @@ verify_ssl = true
 coverage = "*"
 
 [packages]
-django = "==2.2.7"
+django = "==2.2.8"
 weasyprint = "*"
 psycopg2 = "*"
 
