@@ -7,7 +7,7 @@ class StatusSerializer(serializers.ModelSerializer):
             source='location.slug',
             view_name='locations-detail',
             lookup_url_kwarg='slug',
-            queryset=Location.objects.all()
+            read_only=True
     )
     
     class Meta:

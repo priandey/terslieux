@@ -1,16 +1,19 @@
-from rest_framework import viewsets
-from rest_framework import permissions
+from rest_framework import generics
 from django.contrib.auth.models import User
 from user.serializers import UserSerializer
 
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
+
+class UserList(generics.ListAPIView):
     """
     Provide 'list'  and 'details' actions over user resources
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permissions = [permissions.IsAuthenticatedOrReadOnly]
 
+
+class UserDetail(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 """
     Sign in view

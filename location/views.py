@@ -1,32 +1,30 @@
-from rest_framework import viewsets
+from rest_framework import generics
 from rest_framework import permissions
-from rest_framework import status
-
-from rest_framework.decorators import action, api_view
-from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from django.http import Http404
 
 from location.models import Location, Status
 from location.permissions import IsModeratorOrReadOnly, IsVolunteerOrReadOnly
 from location.serializers import LocationSerializer, StatusSerializer
 
 
-class LocationViewSet(viewsets.ModelViewSet):
-    """
-    Provide 'list', 'create', 'retrieve' actions
-    """
+class LocationList(generics.ListCreateAPIView):
     queryset = Location.objects.all()
     serializer_class = LocationSerializer
-    lookup_field = 'slug'
-    permissions = [permissions.IsAuthenticatedOrReadOnly,
-                   IsModeratorOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
         serializer.save(moderator=self.request.user)
 
-class StatusViewSet(viewsets.ModelViewSet):
+class LocationDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Location.objects.all()
+    serializer_class = LocationSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly, IsModeratorOrReadOnly]
+    lookup_field = 'slug'
+
+class StatusDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Status.objects.all()
     serializer_class = StatusSerializer
-    permissions = [permissions.IsAuthenticatedOrReadOnly]
 
 """
 Views that return main public informations about a given location
