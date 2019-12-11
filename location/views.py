@@ -1,41 +1,32 @@
 from rest_framework import viewsets
 from rest_framework import permissions
+from rest_framework import status
+
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 
 from location.models import Location, Status
-from location.permissions import IsModeratorOrReadOnly
+from location.permissions import IsModeratorOrReadOnly, IsVolunteerOrReadOnly
 from location.serializers import LocationSerializer, StatusSerializer
 
 
-class MultiSerializerViewSet(viewsets.ModelViewSet):
+class LocationViewSet(viewsets.ModelViewSet):
     """
-    Provide the correct serializer
+    Provide 'list', 'create', 'retrieve' actions
     """
-    serializers = {
-        'default': None,
-    }
-
-    def get_serializer(self, *args, **kwargs):
-        return self.serializers.get(self.action, self.serializers['default'])
-
-
-class LocationViewSet(MultiSerializerViewSet):
-    """
-    Provide 'list', 'create', 'retrieve', 'update' and 'destroy' actions
-    """
-    model = Location
-    serializers = {
-        'list': LocationSerializer,
-        'detail': StatusSerializer
-    }
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly,
-                          IsModeratorOrReadOnly]
+    queryset = Location.objects.all()
+    serializer_class = LocationSerializer
+    lookup_field = 'slug'
+    permissions = [permissions.IsAuthenticatedOrReadOnly,
+                   IsModeratorOrReadOnly]
 
     def perform_create(self, serializer):
         serializer.save(moderator=self.request.user)
 
-    def get_queryset(self):
+class StatusViewSet(viewsets.ModelViewSet):
+    queryset = Status.objects.all()
+    serializer_class = StatusSerializer
+    permissions = [permissions.IsAuthenticatedOrReadOnly]
 
 """
 Views that return main public informations about a given location

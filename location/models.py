@@ -12,6 +12,9 @@ class Location(models.Model):
     moderator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="location_moderator")
     slug = models.SlugField(unique=True)
 
+    def __repr__(self):
+        return self.name
+
 
 class Status(models.Model):
     """
