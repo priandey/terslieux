@@ -9,7 +9,7 @@ class StatusSerializer(serializers.ModelSerializer):
             lookup_url_kwarg='slug',
             read_only=True
     )
-    
+
     class Meta:
         model = Status
         fields = ['url', 'activity', 'description', 'location', 'open_date', 'close_date', 'volunteer']

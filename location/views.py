@@ -1,5 +1,4 @@
 from rest_framework import generics
-from rest_framework import permissions
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django.http import Http404
 
@@ -9,6 +8,9 @@ from location.serializers import LocationSerializer, StatusSerializer
 
 
 class LocationList(generics.ListCreateAPIView):
+    """
+    Return a list of all locations
+    """
     queryset = Location.objects.all()
     serializer_class = LocationSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
@@ -23,16 +25,22 @@ class LocationDetail(generics.RetrieveUpdateDestroyAPIView):
     lookup_field = 'slug'
 
 class StatusDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Status.objects.all()
     serializer_class = StatusSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly, IsVolunteerOrReadOnly]
+    queryset = Status.objects.all()
 
-"""
-Views that return main public informations about a given location
-:param slug: Slug for the location
-:return: Should return a different template whether user is logged or not.
-        With user logged, various volunteer/moderator related data are
-        sent in template context.
-"""
+class StatusList(generics.ListCreateAPIView):
+    serializer_class = StatusSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly, IsVolunteerOrReadOnly]
+
+    def get_queryset(self):
+        location = Location.objects.get(slug=self.kwargs['slug'])
+        return Status.objects.filter(location=location)
+
+    def perform_create(self, serializer):
+        location = Location.objects.get(slug=self.kwargs['slug'])
+        self.check_object_permissions(self.request, location)
+        serializer.save(location=location)
 
 """
 A view with which the user can create a new location

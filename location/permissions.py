@@ -13,10 +13,20 @@ class IsModeratorOrReadOnly(permissions.BasePermission):
 
 class IsVolunteerOrReadOnly(permissions.BasePermission):
     """
-    Custom permissions ton only allow volunteers of an object to add a status
+    Custom permissions to only allow volunteers of a location to edit/create a status
     """
 
     def has_object_permission(self, request, view, obj):
+        """
+        Assert if user has permission. Obj may be a location or a status (eg : while closing a status)
+        """
+        try:    # Trying to see if object is a Status instance or a Location.
+            obj = obj.location
+        except AttributeError:
+            pass
         if request.method in permissions.SAFE_METHODS:
             return True
-        return request.user in obj.location.volunteers.all()
+        elif request.user in obj.volunteers.filter(is_active=True):
+            return True
+        elif request.user == obj.moderator:
+            return True
