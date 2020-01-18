@@ -20,7 +20,7 @@ class IsVolunteerOrReadOnly(permissions.BasePermission):
         """
         Assert if user has permission. Obj may be a location or a status (eg : while closing a status)
         """
-        try:    # Trying to see if object is a Status instance or a Location.
+        try:    # Trying to see if object is a Status instance or a Location instance.
             obj = obj.location
         except AttributeError:
             pass

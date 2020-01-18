@@ -12,7 +12,7 @@ class StatusSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Status
-        fields = ['url', 'activity', 'description', 'location', 'open_date', 'close_date', 'volunteer']
+        fields = ['url', 'activity', 'description', 'location', 'open_date', 'close_date', 'volunteer', 'is_opened']
         read_only_fields = ['close_date', 'volunteer']
 
 
