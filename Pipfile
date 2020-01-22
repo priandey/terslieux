@@ -8,7 +8,6 @@ coverage = "*"
 
 [packages]
 django = "==2.2.7"
-weasyprint = "*"
 psycopg2 = "*"
 djangorestframework = "==3.10.3"
 django-cors-headers = "==3.2.1"

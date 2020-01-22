@@ -25,13 +25,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
-    'home',
     'location',
     'user',
-    'moderator',
-    'userlocations',
-    'statistic',
-]
+    'userlocations']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
