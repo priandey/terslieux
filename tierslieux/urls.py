@@ -16,6 +16,7 @@ Including another URLconf
 from django.urls import path, include
 from location.views import LocationList, LocationDetail, StatusDetail, StatusList
 from user.views import UserList, UserDetail
+from rest_framework.authtoken import views
 
 urlpatterns = [
     path('locations/', LocationList.as_view(), name='locations-list'),
@@ -25,5 +26,6 @@ urlpatterns = [
     path('users/', UserList.as_view(), name='users-list'),
     path('users/<int:pk>', UserDetail.as_view(), name='users-detail'),
     path('api-auth/', include('rest_framework.urls')),
+    path('obtain-token/', views.obtain_auth_token)
 ]
 

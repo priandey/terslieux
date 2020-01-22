@@ -2,7 +2,6 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 
-
 class Location(models.Model):
     """
     A location
@@ -12,11 +11,14 @@ class Location(models.Model):
     volunteers = models.ManyToManyField(User, through='VolunteerBase', related_name="volunteers")
     moderator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="location_moderator")
     slug = models.SlugField(unique=True)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True)
+    public = models.BooleanField(default=True)
 
     def __repr__(self):
         return self.name
 
-
+# TODO : Gérer les appels à GeoAPI via l'api et une authentification. https://www.django-rest-framework.org/api-guide/authentication/
 class Status(models.Model):
     """
     Status represent an activity running in a location
