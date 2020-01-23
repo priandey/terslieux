@@ -1,0 +1,76 @@
+TODO    Résoudre le problème du rapport à la géographie | Opened : 22/01/2020 19:00 | Expected duration : 1 day | Expected Cost : 500€
+        Tâches :        X Prendre une décision au sujet du problème ci-dessous
+                        X Faire un essai GeoPy + API de geocoding => Pas de Boungind Box
+                        X Eventuellement trouver une alternative élégante (DEADLINE : 23.01 12:00)
+                        X Comparer les Geocoding API : And the winner is API GOUVERNEMENTALE    * OpenCage      Volumétrie gratuite : 2500/d 1req/s
+                                                                                                * Here  Volumétrie gratuite : 8000/d
+                                                                                                * Api Gouvernementale   Volumétrie gratuite : INFINIE ??!!
+
+                        - Faire des essais avec l'API
+                        - Création du modèle pour les Localités :       Champs ~ * Dénomination de la localité
+                                                                                 * Code juridique
+                                                                                 * Type
+                                                                                 * Indice de pondération
+
+
+        Bloc-Note :
+        Problème : Trouver les lieux dans une certaine range autour d'une personne géolocalisée et proposer 6 lieux les plus pertinents pour la personne
+
+        Solution choisie : Récupérer via reverse.geocoding les informations de localité afin de proposer un filtrage selon la localité
+                Temps estimé :   10h                    Coût : 500€
+                                * 2h (maitrise API)
+                                * Création d'un modèle pour stocker les informations provinciales relié au modèle "Location" (3h)
+                                * Création d'un manager pour Location qui pourra initialiser  de nouveaux objets provinciaux s'ils n'existent pas encore (5h)
+                PRO:    - Facilité d'utilisation et bon mix entre les deux solutions initiales
+                        - Un zoom pertinent est plus simple à déterminer. Focus suggéré : Entre 10 or "Fitbound" (lol)
+                        - Résout le problème de la pertinence des 6 lieux sélectionnés si jamais les lieux sont enregistrés avec différentes informations provinciales en db
+
+                CONS:   - Attention au volume de donnée requise à l'API.
+
+        Ressources :
+                        * Api Gouvernementale : https://geo.api.gouv.fr/adresse
+                        * Doc GeoPy : https://geopy.readthedocs.io/en/stable/#banfrance
+
+        Modèle Localité :
+                A la création, indiquer un indice de pondération selon le niveau de proximité de la localité selon ce schéma : { - Street = 50
+                                                                                                                                - Locality = 45
+                                                                                                                                - if(District) = 45
+                                                                                                                                - Municipality = 30
+                                                                                                                                - Context.departement = 20
+                                                                                                                                - Context.Region = 15 }
+
+        Solutions non choisis au problème :
+
+                - Solution géométrique : Précision en rond autour de la personne dans un rayon donné (Bounding Box)
+                Temps estimé : 1 journée                Coût : 500€
+                PRO :   - Elegant
+                        - Toujours fonctionnel
+                        - Toutes les solutions n'ont pas encore été exploitées (geoPy + here https://geopy.readthedocs.io/en/stable/#here)
+
+                CONS :  - Détermination de la bounding box compliquée (Technologie pointue, peu portable de GeoDjango)
+                        - Dernière solution à explorer est payante au dela de 250k utilisation/ mois  (8000/jours) donc peu durable et autonome
+                        - Déterminer un diamère pertinent autour de l'usager afin qu'il ait des propositions en nombre suffisant.
+                        - Here (en omettant son coût, déjà présent dans la liste)
+                                                ET
+                - Solution culturelle : Précision au département / Canton / Ville avec un zoom adéquat de la map ?
+                Temps estimé : 1/2 journée
+                PRO:    - Page d'accueil forcément plus (+) peuplé au début
+                        - Plus facile à mettre en place à priori
+
+                CONS:   - Peu générer des désagrément d'utilisation (exemple : Le Morvan qui est sur 3 départements)
+                        - Difficile de determiner un petit nombre pertinent pour la page d'accueil lors de l'essor de l'application
+
+
+
+TODO    Implémenter un système pour filtrer les requêtes reçues via la searchbar | Opened : 22/01/2020 19:00 | Expected duration : 1 day | Expected Cost : 500€
+        Tâches :        - Déterminer les différents critères de filtres :       Critères    ~   - Critères géographiques (Adresse, géolocalisation)
+                                                                                                - Nom du lieux
+                                                                                                - Statut (Ouvert/fermé/soon)
+
+                        - Se documenter sur les filtres standard de DRF =>  https://www.django-rest-framework.org/api-guide/filtering/
+                        - Se documenter sur les managers django => https://docs.djangoproject.com/fr/2.2/topics/db/managers/
+
+        Note-pensée :   - Déterminer la localité parfaite qui vaut 1 : "Un endroit dans ma plus petite localité (ardt/vill) ouvert en ce moment"
+
+
+TODO    Travailler le filtre géographique avec le système de localité
