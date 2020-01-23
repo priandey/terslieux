@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from location.models import Location, Status
+from location.models import Location, Status, Locality
 
 
 class StatusSerializer(serializers.ModelSerializer):
@@ -19,6 +19,7 @@ class StatusSerializer(serializers.ModelSerializer):
 class LocationSerializer(serializers.ModelSerializer):
     moderator = serializers.HyperlinkedRelatedField(source='moderator.pk', view_name='users-detail', read_only=True)
     statuses = StatusSerializer(many=True, required=False)
+    localities = serializers.StringRelatedField(many=True)
     url = serializers.HyperlinkedIdentityField(
             view_name='locations-detail',
             lookup_field='slug'
@@ -26,4 +27,10 @@ class LocationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Location
-        fields = ['url', 'name', 'description', 'moderator', 'slug', 'statuses']
+        fields = ['url', 'name', 'description', 'localities', 'moderator', 'slug', 'statuses']
+
+
+class LocalitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Locality
+        fields = ['type', 'name']

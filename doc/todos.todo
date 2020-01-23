@@ -1,17 +1,36 @@
-TODO    Résoudre le problème du rapport à la géographie | Opened : 22/01/2020 19:00 | Expected duration : 1 day | Expected Cost : 500€
-        Tâches :        X Prendre une décision au sujet du problème ci-dessous
+TODO    Implémenter un système pour filtrer les requêtes reçues via la searchbar | Opened : 22/01/2020 19:00 | Expected duration : 1 day | Expected Cost : 500€
+        Tâches :        - Déterminer les différents critères de filtres :       Critères    ~   - Critères géographiques (Adresse, géolocalisation)
+                                                                                                - Nom du lieux
+                                                                                                - Statut (Ouvert/fermé/soon)
+
+                        - Se documenter sur les filtres standard de DRF =>  https://www.django-rest-framework.org/api-guide/filtering/
+                        - Se documenter sur les managers django => https://docs.djangoproject.com/fr/2.2/topics/db/managers/
+
+
+        Note-pensée :   - Déterminer la localité parfaite qui vaut 1 : "Un endroit dans ma plus petite localité (ardt/vill) ouvert en ce moment"
+
+
+TODO    Travailler le filtre géographique avec le système de localité
+        Tâches: - Réfléchir au système de pondération et à son implémentation.
+
+DONE   Résoudre le problème du rapport à la géographie | Opened : 22/01/2020 19:00 | Expected duration : 1 day | Expected Cost : 500€ | Closed : 23/01/2019 12:30 | Final Cost : 500€
+        Tâches :        X Proposer plusieurs solutions au problème
+                        X Prendre une décision au sujet du problème ci-dessous
                         X Faire un essai GeoPy + API de geocoding => Pas de Boungind Box
                         X Eventuellement trouver une alternative élégante (DEADLINE : 23.01 12:00)
                         X Comparer les Geocoding API : And the winner is API GOUVERNEMENTALE    * OpenCage      Volumétrie gratuite : 2500/d 1req/s
                                                                                                 * Here  Volumétrie gratuite : 8000/d
                                                                                                 * Api Gouvernementale   Volumétrie gratuite : INFINIE ??!!
 
-                        - Faire des essais avec l'API
-                        - Création du modèle pour les Localités :       Champs ~ * Dénomination de la localité
+                        X Faire des essais avec l'API
+                        X Création du modèle pour les Localités :       Champs ~ * Dénomination de la localité
                                                                                  * Code juridique
                                                                                  * Type
-                                                                                 * Indice de pondération
+                                                                                 * Type de localité
 
+                        X Création du modèle pour les types de localités et leur pondération
+                        X Créer le serializer pour les localités
+                        X Premiers éléments de l'algo de filtrage => Première itération sans pondération
 
         Bloc-Note :
         Problème : Trouver les lieux dans une certaine range autour d'une personne géolocalisée et proposer 6 lieux les plus pertinents pour la personne
@@ -22,22 +41,30 @@ TODO    Résoudre le problème du rapport à la géographie | Opened : 22/01/202
                                 * Création d'un modèle pour stocker les informations provinciales relié au modèle "Location" (3h)
                                 * Création d'un manager pour Location qui pourra initialiser  de nouveaux objets provinciaux s'ils n'existent pas encore (5h)
                 PRO:    - Facilité d'utilisation et bon mix entre les deux solutions initiales
-                        - Un zoom pertinent est plus simple à déterminer. Focus suggéré : Entre 10 or "Fitbound" (lol)
+                        - Un zoom pertinent et plus simple à déterminer. Focus suggéré : Entre 10 or "Fitbound" (lol)
                         - Résout le problème de la pertinence des 6 lieux sélectionnés si jamais les lieux sont enregistrés avec différentes informations provinciales en db
 
-                CONS:   - Attention au volume de donnée requise à l'API.
+                CONS:   - Attention au volume de donnée requise à l'API. (Irrelevant grâce à l'état français <3)
 
         Ressources :
                         * Api Gouvernementale : https://geo.api.gouv.fr/adresse
                         * Doc GeoPy : https://geopy.readthedocs.io/en/stable/#banfrance
 
-        Modèle Localité :
-                A la création, indiquer un indice de pondération selon le niveau de proximité de la localité selon ce schéma : { - Street = 50
-                                                                                                                                - Locality = 45
-                                                                                                                                - if(District) = 45
-                                                                                                                                - Municipality = 30
-                                                                                                                                - Context.departement = 20
-                                                                                                                                - Context.Region = 15 }
+        Modèle LocalityType :
+                Table fixe comprenant les types de localités supportées ainsi que leur valeur de tri :  * Street = 50
+                                                                                                        * Locality = 45
+                                                                                                        * if(District) = 45
+                                                                                                        * city = 40
+                                                                                                        * Municipality = 30
+                                                                                                        * Context.departement = 20
+                                                                                                        * Context.Region = 15
+                                                                                                        * Housenumber = 0
+
+        Détail du temps : Total = 10:00
+                - 22/01/2020 19:00 -> 23/01/2020 01:00 = 06:00  | Reflexion à la solution
+                - 23/01/2010 08:00 -> 10:00 = 02:00     | Mise en place des deux modèles et d'un manager pour Location
+                - 23/01/2010 10:30 ->  12:30 = 02:00    | Création des serializers + Premier filtre mis en place
+
 
         Solutions non choisis au problème :
 
@@ -59,18 +86,3 @@ TODO    Résoudre le problème du rapport à la géographie | Opened : 22/01/202
 
                 CONS:   - Peu générer des désagrément d'utilisation (exemple : Le Morvan qui est sur 3 départements)
                         - Difficile de determiner un petit nombre pertinent pour la page d'accueil lors de l'essor de l'application
-
-
-
-TODO    Implémenter un système pour filtrer les requêtes reçues via la searchbar | Opened : 22/01/2020 19:00 | Expected duration : 1 day | Expected Cost : 500€
-        Tâches :        - Déterminer les différents critères de filtres :       Critères    ~   - Critères géographiques (Adresse, géolocalisation)
-                                                                                                - Nom du lieux
-                                                                                                - Statut (Ouvert/fermé/soon)
-
-                        - Se documenter sur les filtres standard de DRF =>  https://www.django-rest-framework.org/api-guide/filtering/
-                        - Se documenter sur les managers django => https://docs.djangoproject.com/fr/2.2/topics/db/managers/
-
-        Note-pensée :   - Déterminer la localité parfaite qui vaut 1 : "Un endroit dans ma plus petite localité (ardt/vill) ouvert en ce moment"
-
-
-TODO    Travailler le filtre géographique avec le système de localité

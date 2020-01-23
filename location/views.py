@@ -1,11 +1,10 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from django.http import Http404
 
 from location.models import Location, Status
 from location.permissions import IsModeratorOrReadOnly, IsVolunteerOrReadOnly
 from location.serializers import LocationSerializer, StatusSerializer
-
+from location.utils import get_near_localities
 
 class LocationList(generics.ListCreateAPIView):
     """
@@ -17,6 +16,16 @@ class LocationList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(moderator=self.request.user)
+
+    def get_queryset(self):
+        queryset = Location.objects.all()
+        near = self.request.query_params.get('near', None)  # Near should follow format : lon, lat
+        nearcount = self.request.query_params.get('nearcount', 6)
+        if near is not None:
+            user_location = tuple(near.split(","))
+            near_localities = get_near_localities(user_location)
+            queryset = queryset.filter(localities__in=near_localities).distinct('slug')[:nearcount]
+            return queryset
 
 class LocationDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Location.objects.all()
