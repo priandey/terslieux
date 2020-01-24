@@ -4,6 +4,12 @@ from .models import Locality, LocalityType
 
 
 def get_near_localities(point):
+    """
+    Get near localities from french public geo API only ftm
+    URL: https://geo.api.gouv.fr/adresse
+    :param point: point is a Tuple object (longitude, latitude) in radians
+    :return: Return a list of locality model instance
+    """
     payload = {
         'lon': point[0],
         'lat': point[1]

@@ -3,6 +3,7 @@
 .coverage
 .idea/
 .env
+generate_test_data.py
 logs/
 tierslieux/staticfiles
 htmlcov/

@@ -1,17 +1,44 @@
-TODO    Implémenter un système pour filtrer les requêtes reçues via la searchbar | Opened : 22/01/2020 19:00 | Expected duration : 1 day | Expected Cost : 500€
+TODO    Travailler le filtre géographique avec le système de localities | Opened : 22/01/2020 19:00 | Started 23/01/2020 19:00
+        Tâches: - Réfléchir au système de pondération et à son implémentation.
+                - Isoler les comportements à tester
+                - Déterminer une manière de générer un jeu de test
+                        ou
+                X Générer un jeu de test => py manage.py loaddata location.json
+                X Changer l'acquisition de paramètre via deux valeurs
+                - Documenter get_near_localities()
+
+        Idées en vrac : - Tester les distances entre les points filtrés en derniere étape
+                        - Pertinence du modèle LocalityType ?
+
+        Composition du jeu de test :    - 470 lieux partout en France
+        Comportements à tester :
+                                        - Tester location.utils.get_near_localities() impérativement !
+                                        - Tester impérativement le filtre de la requête sous tout les angles !
+        Système de pondération :
+                - Déterminer la localité parfaite qui vaut 100 : "Un endroit dans ma plus petite localité (ardt/vill) ouvert en ce moment"
+                        |_ Same street : 50 + Open : 50 = 100
+
+TODO while searchbar    Implémenter un système pour filtrer les requêtes reçues via la searchbar
         Tâches :        - Déterminer les différents critères de filtres :       Critères    ~   - Critères géographiques (Adresse, géolocalisation)
                                                                                                 - Nom du lieux
-                                                                                                - Statut (Ouvert/fermé/soon)
+                                                                                                - Statut (Ouvert/fermé/bientôt)
 
                         - Se documenter sur les filtres standard de DRF =>  https://www.django-rest-framework.org/api-guide/filtering/
                         - Se documenter sur les managers django => https://docs.djangoproject.com/fr/2.2/topics/db/managers/
 
+                                                ####################################################################
+                                                                                Minido
+                                                ####################################################################
+                                                - Appeler Barnabé pour le voir fin février
+                                                x Trouver comment changer le schéma de docstrings dans pycharm
 
-        Note-pensée :   - Déterminer la localité parfaite qui vaut 1 : "Un endroit dans ma plus petite localité (ardt/vill) ouvert en ce moment"
 
 
-TODO    Travailler le filtre géographique avec le système de localité
-        Tâches: - Réfléchir au système de pondération et à son implémentation.
+
+
+                                                ####################################################################
+                                                                                V DONE V
+                                                ####################################################################
 
 DONE   Résoudre le problème du rapport à la géographie | Opened : 22/01/2020 19:00 | Expected duration : 1 day | Expected Cost : 500€ | Closed : 23/01/2019 12:30 | Final Cost : 500€
         Tâches :        X Proposer plusieurs solutions au problème

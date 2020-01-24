@@ -19,11 +19,15 @@ class LocationList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         queryset = Location.objects.all()
-        near = self.request.query_params.get('near', None)  # Near should follow format : lon, lat
+        nearlon = self.request.query_params.get('nearlon', None)
+        nearlat = self.request.query_params.get('nearlat', None)
         nearcount = self.request.query_params.get('nearcount', 6)
-        if near is not None:
-            user_location = tuple(near.split(","))
+        if nearlon is not None and nearlat is not None:
+            # Transformation des paramètres en tuple exploitable
+            user_location = (nearlon, nearlat)
+            # La fonction magique à tester
             near_localities = get_near_localities(user_location)
+            # Filtre de la requête initiale en comparant localities et le contenu de near_localities (cd fonction doc)
             queryset = queryset.filter(localities__in=near_localities).distinct('slug')[:nearcount]
             return queryset
 

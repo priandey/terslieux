@@ -25,9 +25,9 @@ class LocationManager(models.Manager):
         Lookup upon an adress and parse result into localities
         """
         assign_loc = False
-        if "adress" in kwargs:
+        if "address" in kwargs:
             payload = {
-                "q": kwargs['adress'],
+                "q": kwargs['address'],
                 "limit": 1
             }
             r = requests.get("https://api-adresse.data.gouv.fr/search/", params=payload)
@@ -35,11 +35,12 @@ class LocationManager(models.Manager):
             if r["features"]:
                 assign_loc = True
 
-            kwargs.pop("adress")
+            kwargs.pop("address")
         location = super(LocationManager, self).create(*args, **kwargs)
 
         if assign_loc:
             cursor = r["features"][0]
+            print(cursor["properties"]["context"])
             longitude = cursor["geometry"]["coordinates"][0]
             latitude = cursor["geometry"]["coordinates"][1]
             localities = [
