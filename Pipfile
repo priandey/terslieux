@@ -13,6 +13,7 @@ djangorestframework = "==3.10.3"
 django-cors-headers = "==3.2.1"
 requests = "==2.22.0"
 faker = "==4.0.0"
+geopy = "*"
 
 [requires]
 python_version = "3.7"

@@ -27,7 +27,7 @@ class LocationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Location
-        fields = ['url', 'name', 'description', 'localities', 'moderator', 'slug', 'statuses']
+        fields = ['url', 'name', 'description', 'localities', 'moderator', 'slug', 'statuses', 'latitude', 'longitude']
 
 
 class LocalitySerializer(serializers.ModelSerializer):
