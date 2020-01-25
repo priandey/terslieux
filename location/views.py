@@ -28,7 +28,7 @@ class LocationList(generics.ListCreateAPIView):
             # La fonction magique à tester
             near_localities = get_near_localities(user_location)
             # Filtre de la requête initiale en comparant localities et le contenu de near_localities (cd fonction doc)
-            queryset = queryset.filter(localities__in=near_localities).distinct('slug')[:nearcount]
+            queryset = queryset.filter(localities__in=near_localities).distinct('slug').order_by('slug')[:nearcount]
             return queryset
 
 class LocationDetail(generics.RetrieveUpdateDestroyAPIView):

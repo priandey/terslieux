@@ -1,14 +1,11 @@
 TODO    Travailler le filtre géographique avec le système de localities | Opened : 22/01/2020 19:00 | Started 23/01/2020 19:00
         Tâches: - Réfléchir au système de pondération et à son implémentation.
                 - Isoler les comportements à tester
-                - Déterminer une manière de générer un jeu de test
-                        ou
                 X Générer un jeu de test => py manage.py loaddata location.json
                 X Changer l'acquisition de paramètre via deux valeurs
                 - Documenter get_near_localities()
+                - Tester l'efficacité de la solution "bruteforce"
 
-        Idées en vrac : - Tester les distances entre les points filtrés en derniere étape
-                        - Pertinence du modèle LocalityType ?
 
         Composition du jeu de test :    - 470 lieux partout en France
         Comportements à tester :
@@ -17,6 +14,26 @@ TODO    Travailler le filtre géographique avec le système de localities | Open
         Système de pondération :
                 - Déterminer la localité parfaite qui vaut 100 : "Un endroit dans ma plus petite localité (ardt/vill) ouvert en ce moment"
                         |_ Same street : 50 + Open : 50 = 100
+                - Pertinence du modèle LocalityType ?
+
+        Système de filtrage :
+                X locality_match = Initialiser les localités recherchées
+                X Récuperer toutes les lieux ainsi que leurs localités
+                X Ne garder que ceux dont au moins 1 localité est en commun avec les fonctions de queryset
+
+                *Pondération*
+                pour chaque lieu dans la liste:
+                        comparer les localités avec celles locality_match
+
+
+        - Tester les distances entre les points filtrés en derniere étape
+
+        Calcul des distances entre deux points:
+                >>> from geopy.distance import geodesic
+                >>> paris = (48.850779, 2.350415)
+                >>> morvan = (47.316739, 4.113053)
+                >>> print(geodesic(paris, morvan).km)
+                >>> 215.25703010543708
 
 TODO while searchbar    Implémenter un système pour filtrer les requêtes reçues via la searchbar
         Tâches :        - Déterminer les différents critères de filtres :       Critères    ~   - Critères géographiques (Adresse, géolocalisation)
@@ -29,7 +46,7 @@ TODO while searchbar    Implémenter un système pour filtrer les requêtes reç
                                                 ####################################################################
                                                                                 Minido
                                                 ####################################################################
-                                                - Appeler Barnabé pour le voir fin février
+                                                X Appeler Barnabé pour le voir fin février
                                                 x Trouver comment changer le schéma de docstrings dans pycharm
 
 

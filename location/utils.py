@@ -34,6 +34,7 @@ def get_near_localities(point):
             locality_type = LocalityType.objects.get(label=loc[0])
             locality = Locality.objects.get_or_create(name=loc[1], type=locality_type)
             result.append(locality[0])
+        print(result)
 
         return result
     else:
