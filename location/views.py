@@ -1,5 +1,7 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.exceptions import ValidationError
+from geopy.distance import geodesic
 
 from location.models import Location, Status
 from location.permissions import IsModeratorOrReadOnly, IsVolunteerOrReadOnly
@@ -18,17 +20,30 @@ class LocationList(generics.ListCreateAPIView):
         serializer.save(moderator=self.request.user)
 
     def get_queryset(self):
-        queryset = Location.objects.all()
         nearlon = self.request.query_params.get('nearlon', None)
         nearlat = self.request.query_params.get('nearlat', None)
         nearcount = self.request.query_params.get('nearcount', 6)
         if nearlon is not None and nearlat is not None:
-            # Transformation des paramètres en tuple exploitable
-            user_location = (nearlon, nearlat)
-            # La fonction magique à tester
-            near_localities = get_near_localities(user_location)
-            # Filtre de la requête initiale en comparant localities et le contenu de near_localities (cd fonction doc)
-            queryset = queryset.filter(localities__in=near_localities).distinct('slug').order_by('slug')[:nearcount]
+            try:
+                user_location = (float(nearlat), float(nearlon))
+                nearcount = int(nearcount)
+            except ValueError:
+                raise ValidationError(detail="""Invalid parameters, 
+                                                'nearlat' should be latitude in radians, 
+                                                'nearlon' should be longitude in radians,
+                                                'nearcount' should be an integer""")
+
+            weighted_locations = {}
+            for location in Location.objects.all():
+                distance = geodesic((location.latitude, location.longitude), user_location).km
+                weighted_locations[distance] = location
+
+            choice = sorted(list(weighted_locations.keys()))[:nearcount]
+            queryset = []
+
+            for key in choice:
+                queryset.append(weighted_locations[key])
+            # TODO : Queryset may be always empty, well check emptiness conditions
             return queryset
 
 class LocationDetail(generics.RetrieveUpdateDestroyAPIView):

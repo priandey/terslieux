@@ -1,41 +1,4 @@
-TODO    Travailler le filtre géographique avec le système de localities | Opened : 22/01/2020 19:00 | Started 23/01/2020 19:00
-        Tâches: - Réfléchir au système de pondération et à son implémentation.
-                - Isoler les comportements à tester
-                X Générer un jeu de test => py manage.py loaddata location.json
-                X Changer l'acquisition de paramètre via deux valeurs
-                - Documenter get_near_localities()
-                - Tester l'efficacité de la solution "bruteforce"
-
-
-        Composition du jeu de test :    - 470 lieux partout en France
-        Comportements à tester :
-                                        - Tester location.utils.get_near_localities() impérativement !
-                                        - Tester impérativement le filtre de la requête sous tout les angles !
-        Système de pondération :
-                - Déterminer la localité parfaite qui vaut 100 : "Un endroit dans ma plus petite localité (ardt/vill) ouvert en ce moment"
-                        |_ Same street : 50 + Open : 50 = 100
-                - Pertinence du modèle LocalityType ?
-
-        Système de filtrage :
-                X locality_match = Initialiser les localités recherchées
-                X Récuperer toutes les lieux ainsi que leurs localités
-                X Ne garder que ceux dont au moins 1 localité est en commun avec les fonctions de queryset
-
-                *Pondération*
-                pour chaque lieu dans la liste:
-                        comparer les localités avec celles locality_match
-
-
-        - Tester les distances entre les points filtrés en derniere étape
-
-        Calcul des distances entre deux points:
-                >>> from geopy.distance import geodesic
-                >>> paris = (48.850779, 2.350415)
-                >>> morvan = (47.316739, 4.113053)
-                >>> print(geodesic(paris, morvan).km)
-                >>> 215.25703010543708
-
-TODO while searchbar    Implémenter un système pour filtrer les requêtes reçues via la searchbar
+ TODO while searchbar    Implémenter un système pour filtrer les requêtes reçues via la searchbar
         Tâches :        - Déterminer les différents critères de filtres :       Critères    ~   - Critères géographiques (Adresse, géolocalisation)
                                                                                                 - Nom du lieux
                                                                                                 - Statut (Ouvert/fermé/bientôt)
@@ -46,6 +9,7 @@ TODO while searchbar    Implémenter un système pour filtrer les requêtes reç
                                                 ####################################################################
                                                                                 Minido
                                                 ####################################################################
+                                                - Correct generate_test_data + location manager in creation throwing "unboundlocal error"
                                                 X Appeler Barnabé pour le voir fin février
                                                 x Trouver comment changer le schéma de docstrings dans pycharm
 
@@ -57,7 +21,49 @@ TODO while searchbar    Implémenter un système pour filtrer les requêtes reç
                                                                                 V DONE V
                                                 ####################################################################
 
-DONE   Résoudre le problème du rapport à la géographie | Opened : 22/01/2020 19:00 | Expected duration : 1 day | Expected Cost : 500€ | Closed : 23/01/2019 12:30 | Final Cost : 500€
+Done    Travailler le filtre géographique avec le système de localities | Opened : 22/01/2020 19:00 | Started 23/01/2020 19:00
+        Commentaires : Après des déboires sur l'invention d'un nouveau système de localisation, la solution bruteforce* semble
+                        efficace pour un petit nombre de lieux.
+                        * Comparer les coordonnées gps de toutes les locations à celles de l'emplacement demandé. Permet de ne pas référencer
+                          la France une nouvelle fois.
+        Inutilisé au final :
+                Tâches: - Réfléchir au système de pondération et à son implémentation.
+                        - Isoler les comportements à tester
+                        X Générer un jeu de test => py manage.py loaddata location.json
+                        X Changer l'acquisition de paramètre via deux valeurs
+                        - Documenter get_near_localities()
+                        - Tester l'efficacité de la solution "bruteforce"
+
+
+                Composition du jeu de test :    - 470 lieux partout en France
+                Comportements à tester :
+                                                - Tester location.utils.get_near_localities() impérativement !
+                                                - Tester impérativement le filtre de la requête sous tout les angles !
+                Système de pondération :
+                        - Déterminer la localité parfaite qui vaut 100 : "Un endroit dans ma plus petite localité (ardt/vill) ouvert en ce moment"
+                                |_ Same street : 50 + Open : 50 = 100
+                        - Pertinence du modèle LocalityType ?
+
+                Système de filtrage :
+                        X locality_match = Initialiser les localités recherchées
+                        X Récuperer toutes les lieux ainsi que leurs localités
+                        X Ne garder que ceux dont au moins 1 localité est en commun avec les fonctions de queryset
+
+                        *Pondération*
+                        pour chaque lieu dans la liste:
+                                comparer les localités avec celles locality_match
+
+
+                - Tester les distances entre les points filtrés en derniere étape
+
+                Calcul des distances entre deux points:
+                        >>> from geopy.distance import geodesic
+                        >>> paris = (48.850779, 2.350415)
+                        >>> morvan = (47.316739, 4.113053)
+                        >>> print(geodesic(paris, morvan).km)
+                        >>> 215.25703010543708
+
+DONE   Résoudre le problème du rapport à la géographie | Opened : 22/01/2020 19:00 | Expected duration : 1 day | Closed : 23/01/2019 12:30
         Tâches :        X Proposer plusieurs solutions au problème
                         X Prendre une décision au sujet du problème ci-dessous
                         X Faire un essai GeoPy + API de geocoding => Pas de Boungind Box

@@ -6,7 +6,6 @@ import requests
 
 class LocalityType(models.Model):
     label = models.CharField(max_length=100)
-    ponderation_indice = models.IntegerField()
 
     def __str__(self):
         return self.label
@@ -43,12 +42,15 @@ class LocationManager(models.Manager):
             print(cursor["properties"]["context"])
             longitude = cursor["geometry"]["coordinates"][0]
             latitude = cursor["geometry"]["coordinates"][1]
-            localities = [
-                (cursor["properties"]["type"], cursor["properties"]["name"]),
-                ("city", cursor["properties"]["city"]),
-                ("departement", cursor["properties"]["context"][:2]),
-                ("region", cursor["properties"]["context"].split(" ")[2]),
-            ]
+            try:
+                localities = [
+                    (cursor["properties"]["type"], cursor["properties"]["name"]),
+                    ("city", cursor["properties"]["city"]),
+                    ("departement", cursor["properties"]["context"][:2]),
+                    ("region", cursor["properties"]["context"].split(" ")[2]),
+                ]
+            except IndexError:
+                localities = []
 
             try:
                 localities.append(("district", cursor["properties"]["district"]))
@@ -56,8 +58,8 @@ class LocationManager(models.Manager):
                 pass
 
             for loc in localities:
-                localityType = LocalityType.objects.get(label=loc[0])
-                locality = Locality.objects.get_or_create(name=loc[1], type=localityType)
+                localityType = LocalityType.objects.get_or_create(label=loc[0])
+                locality = Locality.objects.get_or_create(name=loc[1], type=localityType[0])
                 location.localities.add(locality[0])
             location.latitude = latitude
             location.longitude = longitude
