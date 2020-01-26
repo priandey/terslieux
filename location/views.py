@@ -24,18 +24,16 @@ class LocationList(generics.ListCreateAPIView):
         nearlat = self.request.query_params.get('nearlat', None)
         nearcount = self.request.query_params.get('nearcount', 6)
         if nearlon is not None and nearlat is not None:
-
             try:
                 user_location = (float(nearlat), float(nearlon))
                 nearcount = int(nearcount)
-
             except ValueError:
                 raise ValidationError(detail="""Invalid parameters, 
                                                 'nearlat' should be latitude in radians, 
                                                 'nearlon' should be longitude in radians,
                                                 'nearcount' should be an integer""")
-            weighted_locations = {}
 
+            weighted_locations = {}
             for location in Location.objects.all():
                 distance = geodesic((location.latitude, location.longitude), user_location).km
                 weighted_locations[distance] = location
@@ -45,7 +43,7 @@ class LocationList(generics.ListCreateAPIView):
 
             for key in choice:
                 queryset.append(weighted_locations[key])
-
+            # TODO : Queryset may be always empty, well check emptiness conditions
             return queryset
 
 class LocationDetail(generics.RetrieveUpdateDestroyAPIView):

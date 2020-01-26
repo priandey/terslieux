@@ -1,4 +1,4 @@
-TODO while searchbar    Implémenter un système pour filtrer les requêtes reçues via la searchbar
+ TODO while searchbar    Implémenter un système pour filtrer les requêtes reçues via la searchbar
         Tâches :        - Déterminer les différents critères de filtres :       Critères    ~   - Critères géographiques (Adresse, géolocalisation)
                                                                                                 - Nom du lieux
                                                                                                 - Statut (Ouvert/fermé/bientôt)
