@@ -1,40 +1,74 @@
-from rest_framework import viewsets
-from rest_framework import permissions
-from rest_framework import status
-
-from rest_framework.decorators import action, api_view
-from rest_framework.response import Response
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.exceptions import ValidationError
+from geopy.distance import geodesic
 
 from location.models import Location, Status
 from location.permissions import IsModeratorOrReadOnly, IsVolunteerOrReadOnly
 from location.serializers import LocationSerializer, StatusSerializer
+from location.utils import get_near_localities
 
-
-class LocationViewSet(viewsets.ModelViewSet):
+class LocationList(generics.ListCreateAPIView):
     """
-    Provide 'list', 'create', 'retrieve' actions
+    Return a list of all locations
     """
     queryset = Location.objects.all()
     serializer_class = LocationSerializer
-    lookup_field = 'slug'
-    permissions = [permissions.IsAuthenticatedOrReadOnly,
-                   IsModeratorOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
         serializer.save(moderator=self.request.user)
 
-class StatusViewSet(viewsets.ModelViewSet):
-    queryset = Status.objects.all()
-    serializer_class = StatusSerializer
-    permissions = [permissions.IsAuthenticatedOrReadOnly]
+    def get_queryset(self):
+        nearlon = self.request.query_params.get('nearlon', None)
+        nearlat = self.request.query_params.get('nearlat', None)
+        nearcount = self.request.query_params.get('nearcount', 6)
+        if nearlon is not None and nearlat is not None:
+            try:
+                user_location = (float(nearlat), float(nearlon))
+                nearcount = int(nearcount)
+            except ValueError:
+                raise ValidationError(detail="""Invalid parameters, 
+                                                'nearlat' should be latitude in radians, 
+                                                'nearlon' should be longitude in radians,
+                                                'nearcount' should be an integer""")
 
-"""
-Views that return main public informations about a given location
-:param slug: Slug for the location
-:return: Should return a different template whether user is logged or not.
-        With user logged, various volunteer/moderator related data are
-        sent in template context.
-"""
+            weighted_locations = {}
+            for location in Location.objects.all():
+                distance = geodesic((location.latitude, location.longitude), user_location).km
+                weighted_locations[distance] = location
+
+            choice = sorted(list(weighted_locations.keys()))[:nearcount]
+            queryset = []
+
+            for key in choice:
+                queryset.append(weighted_locations[key])
+            # TODO : Queryset may be always empty, well check emptiness conditions
+            return queryset
+
+class LocationDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Location.objects.all()
+    serializer_class = LocationSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly, IsModeratorOrReadOnly]
+    lookup_field = 'slug'
+
+class StatusDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = StatusSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly, IsVolunteerOrReadOnly]
+    queryset = Status.objects.all()
+
+class StatusList(generics.ListCreateAPIView):
+    serializer_class = StatusSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly, IsVolunteerOrReadOnly]
+
+    def get_queryset(self):
+        location = Location.objects.get(slug=self.kwargs['slug'])
+        return Status.objects.filter(location=location)
+
+    def perform_create(self, serializer):
+        location = Location.objects.get(slug=self.kwargs['slug'])
+        self.check_object_permissions(self.request, location)
+        serializer.save(location=location)
 
 """
 A view with which the user can create a new location
