@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpResponseForbidden
 from django.template.loader import render_to_string
 import weasyprint
 
-from user.models import CustomUser
+from django.contrib.auth.models import User
 from location.models import Location, Status, VolunteerBase
 
 
