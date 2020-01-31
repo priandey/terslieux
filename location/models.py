@@ -74,6 +74,7 @@ class Location(models.Model):
     objects = LocationManager()
 
     name = models.CharField(max_length=255)
+    catchphrase = models.CharField(max_length=100)
     description = models.TextField()
     volunteers = models.ManyToManyField(User, through='VolunteerBase', related_name="volunteers")
     moderator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="location_moderator")
