@@ -22,6 +22,7 @@ class LocationManager(models.Manager):
     def create(self, *args, **kwargs):
         """
         Lookup upon an adress and parse result into localities
+        TODO : Clean it so we can have a reusable coordinates extractor
         """
         assign_loc = False
         if "address" in kwargs:

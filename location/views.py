@@ -1,3 +1,5 @@
+import requests
+
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.exceptions import ValidationError
@@ -22,22 +24,29 @@ class LocationList(generics.ListCreateAPIView):
     def get_queryset(self):
         queryset = []
         origin = self.request.query_params.get('origin', default='geolocated')
+        search_type = self.request.query_params.get('search_type', default='name')
 
         if origin == 'geolocated':
             queryset = self.get_by_geolocation()
 
         elif origin == 'searchbar':
-            queryset = self.get_by_filtering()
+            if search_type == "name":
+                queryset = self.get_by_name()
+
+            elif search_type == "address":
+                queryset = self.get_by_address()
 
         return queryset
 
-    def get_by_geolocation(self):
+    def get_by_geolocation(self, nearlon=False, nearlat=False, nearcount=False):
         ''' Get locations near coordinates '''
         result = []
-        nearlon = self.request.query_params.get('nearlon', None)
-        nearlat = self.request.query_params.get('nearlat', None)
-        nearcount = self.request.query_params.get('nearcount', 6)
-        if nearlon is not None and nearlat is not None:
+        if not nearlon or not nearlat or not nearcount:
+            nearlon = self.request.query_params.get('nearlon', False)
+            nearlat = self.request.query_params.get('nearlat', False)
+            nearcount = self.request.query_params.get('nearcount', 6)
+
+        if nearlon and nearlat:
             try:
                 user_location = (float(nearlat), float(nearlon))
                 nearcount = int(nearcount)
@@ -56,19 +65,42 @@ class LocationList(generics.ListCreateAPIView):
 
             for key in choice:
                 result.append(weighted_locations[key])
-        # TODO : Queryset may be always empty, well check emptiness conditions
         return result
 
-    def get_by_filtering(self):
+    def get_by_name(self):
         result = []
         search_terms = self.request.query_params.get('terms', None)
-        print(search_terms)
 
         if search_terms is not None:
             parsed_terms = search_terms.split(' ')
             for term in parsed_terms:
                 for location in Location.objects.filter(name__icontains=term):
                     result.append(location)
+        return result
+
+    def get_by_address(self):
+        """
+        TODO : This could need the reusable coord extractor that should arrive in location.models.LocationManager
+        :return:
+        """
+        result = []
+        payload = {
+            "q": self.request.query_params.get('terms', default=None),
+            "limit": 1
+        }
+        result_count = self.request.query_params.get('result_count', default=10)
+        r = requests.get("https://api-adresse.data.gouv.fr/search/", params=payload)
+        r = r.json()
+        try:
+            if r["features"]:
+                cursor = r["features"][0]
+                longitude = cursor["geometry"]["coordinates"][0]
+                latitude = cursor["geometry"]["coordinates"][1]
+                result = self.get_by_geolocation(nearlon=longitude, nearlat=latitude, nearcount=result_count)
+                print(cursor)
+        except KeyError as e:
+            print(f'Key error : r[{e}] not found')
+
         return result
 
 
