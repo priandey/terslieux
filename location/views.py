@@ -44,7 +44,7 @@ class LocationList(generics.ListCreateAPIView):
         if not nearlon or not nearlat or not nearcount:
             nearlon = self.request.query_params.get('nearlon', False)
             nearlat = self.request.query_params.get('nearlat', False)
-            nearcount = self.request.query_params.get('nearcount', 6)
+            nearcount = self.request.query_params.get('result_count', 6)
 
         if nearlon and nearlat:
             try:
@@ -68,6 +68,10 @@ class LocationList(generics.ListCreateAPIView):
         return result
 
     def get_by_name(self):
+        """
+        TODO : Result count not supported
+        :return:
+        """
         result = []
         search_terms = self.request.query_params.get('terms', None)
 
