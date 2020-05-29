@@ -1,6 +1,7 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.exceptions import ValidationError
+from django.contrib.auth.models import User
 from geopy.distance import geodesic
 
 from location.models import Location, Status
@@ -42,9 +43,9 @@ class LocationList(generics.ListCreateAPIView):
                 nearcount = int(nearcount)
             except ValueError:
                 raise ValidationError(detail="""Invalid parameters, 
-                                                    'nearlat' should be latitude in radians, 
-                                                    'nearlon' should be longitude in radians,
-                                                    'nearcount' should be an integer""")
+                                                'nearlat' should be latitude in radians, 
+                                                'nearlon' should be longitude in radians,
+                                                'nearcount' should be an integer""")
 
             weighted_locations = {}
             for location in Location.objects.all():
@@ -60,7 +61,14 @@ class LocationList(generics.ListCreateAPIView):
 
     def get_by_filtering(self):
         result = []
+        search_terms = self.request.query_params.get('terms', None)
+        print(search_terms)
 
+        if search_terms is not None:
+            parsed_terms = search_terms.split(' ')
+            for term in parsed_terms:
+                for location in Location.objects.filter(name__icontains=term):
+                    result.append(location)
         return result
 
 
