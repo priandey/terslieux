@@ -2,21 +2,93 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 
+import requests
+
+class LocalityType(models.Model):
+    label = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.label
+
+
+class Locality(models.Model):
+    name = models.CharField(max_length=255)
+    type = models.ForeignKey(LocalityType, on_delete=models.CASCADE, related_name="localities")
+
+    def __str__(self):
+        return f'{self.type}:{self.name}'
+
+class LocationManager(models.Manager):
+    def create(self, *args, **kwargs):
+        """
+        Lookup upon an adress and parse result into localities
+        """
+        assign_loc = False
+        if "address" in kwargs:
+            payload = {
+                "q": kwargs['address'],
+                "limit": 1
+            }
+            r = requests.get("https://api-adresse.data.gouv.fr/search/", params=payload)
+            r = r.json()
+            if r["features"]:
+                assign_loc = True
+
+            kwargs.pop("address")
+        location = super(LocationManager, self).create(*args, **kwargs)
+
+        if assign_loc:
+            cursor = r["features"][0]
+            print(cursor["properties"]["context"])
+            longitude = cursor["geometry"]["coordinates"][0]
+            latitude = cursor["geometry"]["coordinates"][1]
+            try:
+                localities = [
+                    (cursor["properties"]["type"], cursor["properties"]["name"]),
+                    ("city", cursor["properties"]["city"]),
+                    ("departement", cursor["properties"]["context"][:2]),
+                    ("region", cursor["properties"]["context"].split(" ")[2]),
+                ]
+            except IndexError:
+                localities = []
+
+            try:
+                localities.append(("district", cursor["properties"]["district"]))
+            except KeyError:
+                pass
+
+            for loc in localities:
+                localityType = LocalityType.objects.get_or_create(label=loc[0])
+                locality = Locality.objects.get_or_create(name=loc[1], type=localityType[0])
+                location.localities.add(locality[0])
+            location.latitude = latitude
+            location.longitude = longitude
+        location.save()
+        return location
+
 
 class Location(models.Model):
     """
     A location
     """
+    objects = LocationManager()
+
     name = models.CharField(max_length=255)
+    catchphrase = models.CharField(max_length=100)
     description = models.TextField()
     volunteers = models.ManyToManyField(User, through='VolunteerBase', related_name="volunteers")
     moderator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="location_moderator")
     slug = models.SlugField(unique=True)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True)
+    localities = models.ManyToManyField(Locality, related_name="locations")
+    public = models.BooleanField(default=True)
 
     def __repr__(self):
         return self.name
 
 
+# TODO : Gérer les appels à GeoAPI via l'api et une authentification. https://www.django-rest-framework.org/api-guide/authentication/
 class Status(models.Model):
     """
     Status represent an activity running in a location
@@ -65,6 +137,7 @@ class Status(models.Model):
             'pretty'       : '{} hours, {} minutes'.format(ot_hours, ot_minutes)
         }
         return response
+
 
 
 class VolunteeringRequest(models.Model):

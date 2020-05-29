@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from user.serializers import UserSerializer
 
 
-class UserList(generics.ListAPIView):
+class UserList(generics.ListCreateAPIView):
     """
     Provide 'list'  and 'details' actions over user resources
     """

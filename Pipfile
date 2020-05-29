@@ -8,10 +8,13 @@ coverage = "*"
 
 [packages]
 django = "==2.2.7"
-weasyprint = "*"
 psycopg2 = "*"
 djangorestframework = "==3.10.3"
-psycopg2-binary = "*"
+django-cors-headers = "==3.2.1"
+requests = "==2.22.0"
+faker = "==4.0.0"
+geopy = "*"
+
 
 [requires]
 python_version = "3.7"
