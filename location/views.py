@@ -109,6 +109,7 @@ class LocationList(generics.ListCreateAPIView):
 
 
 class LocationDetail(generics.RetrieveUpdateDestroyAPIView):
+    # TODO : LocationDetail called on loop, need to investigate
     queryset = Location.objects.all()
     serializer_class = LocationSerializer
     permission_classes = [IsAuthenticatedOrReadOnly, IsModeratorOrReadOnly]

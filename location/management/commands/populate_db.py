@@ -20,7 +20,7 @@ class Command(BaseCommand):
         while location_count < options['location_number'][0]:
             new_user = User.objects.create_user(fake.name(), fake.email(), fake.password(length=12))
             for i in range(randint(1,4)):
-                Location.objects.create(
+                loc = Location.objects.create(
                     name=fake.company(),
                     catchphrase=fake.catch_phrase(),
                     description=fake.sentence(nb_words=17),
@@ -28,4 +28,5 @@ class Command(BaseCommand):
                     slug=fake.slug(),
                     address=fake.address()
                 )
+                print(loc.address)
                 location_count += 1
