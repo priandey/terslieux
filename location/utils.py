@@ -1,6 +1,46 @@
 import requests
 
-from .models import Locality, LocalityType
+
+def coordinate_to_address(lat, lon):
+    filler_address = "Unable to find address"
+    payload = {
+        'lon': lon,
+        'lat': lat,
+    }
+    r = requests.get("https://api-adresse.data.gouv.fr/reverse/", params=payload)
+    r = r.json()
+    try:
+        if r["features"]:
+            cursor = r["features"][0]
+            address = cursor['properties']['label']
+        else:
+            address = filler_address
+    except KeyError:
+        address = filler_address
+
+    return address
+
+
+def address_to_coordinate(address):
+    payload = {
+        "q": address,
+        "limit": 1
+    }
+    r = requests.get("https://api-adresse.data.gouv.fr/search/", params=payload)
+    r = r.json()
+    try:
+        if r["features"]:
+            cursor = r["features"][0]
+            latitude = cursor["geometry"]["coordinates"][1]
+            longitude = cursor["geometry"]["coordinates"][0]
+        else:
+            latitude = None
+            longitude = None
+    except KeyError:
+        latitude = None
+        longitude = None
+
+    return latitude, longitude
 
 
 def get_near_localities(point):

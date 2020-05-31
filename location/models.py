@@ -1,3 +1,5 @@
+import requests
+
 from django.db import models
 from django.db.utils import IntegrityError
 from django.utils import timezone
@@ -5,26 +7,14 @@ from django.utils.crypto import get_random_string
 from django.utils.text import slugify
 from django.contrib.auth.models import User
 
-import requests
+from .utils import address_to_coordinate, coordinate_to_address
 
 
 class LocationManager(models.Manager):
     def create(self, *args, **kwargs):
         """
         Lookup upon an adress and parse result into localities and coordinates
-        TODO : Clean it so we can have a reusable coordinates extractor
         """
-        assign_loc = False
-        if "address" in kwargs:
-            payload = {
-                "q": kwargs['address'],
-                "limit": 1
-            }
-            r = requests.get("https://api-adresse.data.gouv.fr/search/", params=payload)
-            r = r.json()
-            if r["features"]:
-                assign_loc = True
-
         slug = slugify(kwargs['name'])
 
         try:
@@ -33,10 +23,12 @@ class LocationManager(models.Manager):
             slug = slugify(slug + '-' + get_random_string(length=6))
             location = super(LocationManager, self).create(slug=slug, *args, **kwargs)
 
-        if assign_loc:
-            cursor = r["features"][0]
-            location.latitude = cursor["geometry"]["coordinates"][1]
-            location.longitude = cursor["geometry"]["coordinates"][0]
+        if 'address' in kwargs:
+            coords = address_to_coordinate(kwargs['address'])
+            location.latitude = coords[0]
+            location.longitude = coords[1]
+        elif 'lat' in kwargs and 'lon' in kwargs:
+            location.address = coordinate_to_address(kwargs['lat'], kwargs['lon'])
 
         location.save()
         return location

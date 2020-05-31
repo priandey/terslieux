@@ -3,12 +3,12 @@ import requests
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.exceptions import ValidationError
-from django.contrib.auth.models import User
 from geopy.distance import geodesic
 
 from location.models import Location, Status
 from location.permissions import IsModeratorOrReadOnly, IsVolunteerOrReadOnly
 from location.serializers import LocationSerializer, StatusSerializer
+from location.utils import address_to_coordinate
 
 class LocationList(generics.ListCreateAPIView):
     """
@@ -25,6 +25,7 @@ class LocationList(generics.ListCreateAPIView):
         queryset = []
         origin = self.request.query_params.get('origin', default='geolocated')
         search_type = self.request.query_params.get('search_type', default='name')
+        print(self.request.META.get('HTTP_REFERER',''))
 
         if origin == 'geolocated':
             queryset = self.get_by_geolocation()
@@ -84,32 +85,16 @@ class LocationList(generics.ListCreateAPIView):
 
     def get_by_address(self):
         """
-        TODO : This could need the reusable coord extractor that should arrive in location.models.LocationManager
         :return:
         """
-        result = []
-        payload = {
-            "q": self.request.query_params.get('terms', default=None),
-            "limit": 1
-        }
         result_count = self.request.query_params.get('result_count', default=10)
-        r = requests.get("https://api-adresse.data.gouv.fr/search/", params=payload)
-        r = r.json()
-        try:
-            if r["features"]:
-                cursor = r["features"][0]
-                longitude = cursor["geometry"]["coordinates"][0]
-                latitude = cursor["geometry"]["coordinates"][1]
-                result = self.get_by_geolocation(nearlon=longitude, nearlat=latitude, nearcount=result_count)
-                print(cursor)
-        except KeyError as e:
-            print(f'Key error : r[{e}] not found')
+        latitude, longitude = address_to_coordinate(self.request.query_params.get('terms', default=None))
+        result = self.get_by_geolocation(nearlon=longitude, nearlat=latitude, nearcount=result_count)
 
         return result
 
 
 class LocationDetail(generics.RetrieveUpdateDestroyAPIView):
-    # TODO : LocationDetail called on loop, need to investigate
     queryset = Location.objects.all()
     serializer_class = LocationSerializer
     permission_classes = [IsAuthenticatedOrReadOnly, IsModeratorOrReadOnly]

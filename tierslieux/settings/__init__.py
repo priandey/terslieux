@@ -37,7 +37,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'tierslieux.allowhostmiddleware.AllowHostsMiddleware',
+    'tierslieux.middlewares.allowhostmiddleware.AllowHostsMiddleware',
 ]
 
 ROOT_URLCONF = 'tierslieux.urls'
