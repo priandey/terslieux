@@ -1,5 +1,8 @@
 from django.db import models
+from django.db.utils import IntegrityError
 from django.utils import timezone
+from django.utils.crypto import get_random_string
+from django.utils.text import slugify
 from django.contrib.auth.models import User
 
 import requests
@@ -22,7 +25,13 @@ class LocationManager(models.Manager):
             if r["features"]:
                 assign_loc = True
 
-        location = super(LocationManager, self).create(*args, **kwargs)
+        slug = slugify(kwargs['name'])
+
+        try:
+            location = super(LocationManager, self).create(slug=slug, *args, **kwargs)
+        except IntegrityError:
+            slug = slugify(slug + '-' + get_random_string(length=6))
+            location = super(LocationManager, self).create(slug=slug, *args, **kwargs)
 
         if assign_loc:
             cursor = r["features"][0]
@@ -45,7 +54,7 @@ class Location(models.Model):
     address = models.CharField(max_length=255, null=True)
     volunteers = models.ManyToManyField(User, through='VolunteerBase', related_name="volunteers")
     moderator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="location_moderator")
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, blank=True)
     latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True)
     public = models.BooleanField(default=True)
