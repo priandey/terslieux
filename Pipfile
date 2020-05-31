@@ -15,5 +15,6 @@ requests = "==2.22.0"
 faker = "==4.0.0"
 geopy = "*"
 
+
 [requires]
 python_version = "3.7"
