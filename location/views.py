@@ -25,7 +25,6 @@ class LocationList(generics.ListCreateAPIView):
         queryset = []
         origin = self.request.query_params.get('origin', default='geolocated')
         search_type = self.request.query_params.get('search_type', default='name')
-        print(self.request.META.get('HTTP_REFERER',''))
 
         if origin == 'geolocated':
             queryset = self.get_by_geolocation()

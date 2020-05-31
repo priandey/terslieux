@@ -23,13 +23,14 @@ class LocationManager(models.Manager):
             slug = slugify(slug + '-' + get_random_string(length=6))
             location = super(LocationManager, self).create(slug=slug, *args, **kwargs)
 
-        if 'address' in kwargs:
+        if 'address' in kwargs and not 'latitude' in kwargs and not 'longitude' in kwargs:
             coords = address_to_coordinate(kwargs['address'])
             location.latitude = coords[0]
             location.longitude = coords[1]
-        elif 'lat' in kwargs and 'lon' in kwargs:
-            location.address = coordinate_to_address(kwargs['lat'], kwargs['lon'])
-
+        elif 'latitude' in kwargs and 'longitude' in kwargs and not 'address' in kwargs:
+            location.address = coordinate_to_address(kwargs['latitude'], kwargs['longitude'])
+        else:
+            pass
         location.save()
         return location
 
@@ -47,8 +48,8 @@ class Location(models.Model):
     volunteers = models.ManyToManyField(User, through='VolunteerBase', related_name="volunteers")
     moderator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="location_moderator")
     slug = models.SlugField(unique=True, blank=True)
-    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True)
-    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True)
+    latitude = models.DecimalField(max_digits=18, decimal_places=15, null=True)
+    longitude = models.DecimalField(max_digits=18, decimal_places=15, null=True)
     public = models.BooleanField(default=True)
 
     def __repr__(self):
