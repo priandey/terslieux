@@ -1,3 +1,5 @@
+import requests
+
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.exceptions import ValidationError
@@ -6,7 +8,7 @@ from geopy.distance import geodesic
 from location.models import Location, Status
 from location.permissions import IsModeratorOrReadOnly, IsVolunteerOrReadOnly
 from location.serializers import LocationSerializer, StatusSerializer
-from location.utils import get_near_localities
+from location.utils import address_to_coordinate
 
 class LocationList(generics.ListCreateAPIView):
     """
@@ -20,10 +22,31 @@ class LocationList(generics.ListCreateAPIView):
         serializer.save(moderator=self.request.user)
 
     def get_queryset(self):
-        nearlon = self.request.query_params.get('nearlon', None)
-        nearlat = self.request.query_params.get('nearlat', None)
-        nearcount = self.request.query_params.get('nearcount', 6)
-        if nearlon is not None and nearlat is not None:
+        queryset = []
+        origin = self.request.query_params.get('origin', default='geolocated')
+        search_type = self.request.query_params.get('search_type', default='name')
+
+        if origin == 'geolocated':
+            queryset = self.get_by_geolocation()
+
+        elif origin == 'searchbar':
+            if search_type == "name":
+                queryset = self.get_by_name()
+
+            elif search_type == "address":
+                queryset = self.get_by_address()
+
+        return queryset
+
+    def get_by_geolocation(self, nearlon=False, nearlat=False, nearcount=False):
+        ''' Get locations near coordinates '''
+        result = []
+        if not nearlon or not nearlat or not nearcount:
+            nearlon = self.request.query_params.get('nearlon', False)
+            nearlat = self.request.query_params.get('nearlat', False)
+            nearcount = self.request.query_params.get('result_count', 6)
+
+        if nearlon and nearlat:
             try:
                 user_location = (float(nearlat), float(nearlon))
                 nearcount = int(nearcount)
@@ -39,12 +62,36 @@ class LocationList(generics.ListCreateAPIView):
                 weighted_locations[distance] = location
 
             choice = sorted(list(weighted_locations.keys()))[:nearcount]
-            queryset = []
 
             for key in choice:
-                queryset.append(weighted_locations[key])
-            # TODO : Queryset may be always empty, well check emptiness conditions
-            return queryset
+                result.append(weighted_locations[key])
+        return result
+
+    def get_by_name(self):
+        """
+        TODO : Result count not supported
+        :return:
+        """
+        result = []
+        search_terms = self.request.query_params.get('terms', None)
+
+        if search_terms is not None:
+            parsed_terms = search_terms.split(' ')
+            for term in parsed_terms:
+                for location in Location.objects.filter(name__icontains=term):
+                    result.append(location)
+        return result
+
+    def get_by_address(self):
+        """
+        :return:
+        """
+        result_count = self.request.query_params.get('result_count', default=10)
+        latitude, longitude = address_to_coordinate(self.request.query_params.get('terms', default=None))
+        result = self.get_by_geolocation(nearlon=longitude, nearlat=latitude, nearcount=result_count)
+
+        return result
+
 
 class LocationDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Location.objects.all()
@@ -69,55 +116,3 @@ class StatusList(generics.ListCreateAPIView):
         location = Location.objects.get(slug=self.kwargs['slug'])
         self.check_object_permissions(self.request, location)
         serializer.save(location=location)
-
-"""
-A view with which the user can create a new location
-:return: Return the location creation template or a redirection to
-        new location detail page.
-"""
-
-
-
-"""
-Allow user to send a volunteering request to the location moderator.
-
-:param slug: Slug of the location
-:return: Redirect to the updated location detail page
-"""
-
-
-"""
-Allow moderator and volunteers to open a location by adding a status.
-
-:param slug: Slug for the location
-:return: Should return status creation form, or create a new status and
-redirect to location detail view.
-"""
-
-
-"""
-Allow moderator and volunteers to close a status.
-
-:param slug: Slug for the location
-:return: A redirection to location detail view
-"""
-
-
-"""
-Redirect user to location selected in search field.
-
-:return: A redirection to location detail view
-"""
-
-
-"""
-Allow moderator to edit location information such as name and description
-
-:param slug: Slug for the location
-"""
-
-"""
-Allow moderator to delete location
-
-:param slug: Slug for the location
-"""

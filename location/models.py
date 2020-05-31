@@ -1,68 +1,36 @@
-from django.db import models
-from django.utils import timezone
-from django.contrib.auth.models import User
-
 import requests
 
-class LocalityType(models.Model):
-    label = models.CharField(max_length=100)
+from django.db import models
+from django.db.utils import IntegrityError
+from django.utils import timezone
+from django.utils.crypto import get_random_string
+from django.utils.text import slugify
+from django.contrib.auth.models import User
 
-    def __str__(self):
-        return self.label
+from .utils import address_to_coordinate, coordinate_to_address
 
-
-class Locality(models.Model):
-    name = models.CharField(max_length=255)
-    type = models.ForeignKey(LocalityType, on_delete=models.CASCADE, related_name="localities")
-
-    def __str__(self):
-        return f'{self.type}:{self.name}'
 
 class LocationManager(models.Manager):
     def create(self, *args, **kwargs):
         """
-        Lookup upon an adress and parse result into localities
+        Lookup upon an adress and parse result into localities and coordinates
         """
-        assign_loc = False
-        if "address" in kwargs:
-            payload = {
-                "q": kwargs['address'],
-                "limit": 1
-            }
-            r = requests.get("https://api-adresse.data.gouv.fr/search/", params=payload)
-            r = r.json()
-            if r["features"]:
-                assign_loc = True
+        slug = slugify(kwargs['name'])
 
-            kwargs.pop("address")
-        location = super(LocationManager, self).create(*args, **kwargs)
+        try:
+            location = super(LocationManager, self).create(slug=slug, *args, **kwargs)
+        except IntegrityError:
+            slug = slugify(slug + '-' + get_random_string(length=6))
+            location = super(LocationManager, self).create(slug=slug, *args, **kwargs)
 
-        if assign_loc:
-            cursor = r["features"][0]
-            print(cursor["properties"]["context"])
-            longitude = cursor["geometry"]["coordinates"][0]
-            latitude = cursor["geometry"]["coordinates"][1]
-            try:
-                localities = [
-                    (cursor["properties"]["type"], cursor["properties"]["name"]),
-                    ("city", cursor["properties"]["city"]),
-                    ("departement", cursor["properties"]["context"][:2]),
-                    ("region", cursor["properties"]["context"].split(" ")[2]),
-                ]
-            except IndexError:
-                localities = []
-
-            try:
-                localities.append(("district", cursor["properties"]["district"]))
-            except KeyError:
-                pass
-
-            for loc in localities:
-                localityType = LocalityType.objects.get_or_create(label=loc[0])
-                locality = Locality.objects.get_or_create(name=loc[1], type=localityType[0])
-                location.localities.add(locality[0])
-            location.latitude = latitude
-            location.longitude = longitude
+        if 'address' in kwargs and not 'latitude' in kwargs and not 'longitude' in kwargs:
+            coords = address_to_coordinate(kwargs['address'])
+            location.latitude = coords[0]
+            location.longitude = coords[1]
+        elif 'latitude' in kwargs and 'longitude' in kwargs and not 'address' in kwargs:
+            location.address = coordinate_to_address(kwargs['latitude'], kwargs['longitude'])
+        else:
+            pass
         location.save()
         return location
 
@@ -76,19 +44,18 @@ class Location(models.Model):
     name = models.CharField(max_length=255)
     catchphrase = models.CharField(max_length=100)
     description = models.TextField()
+    address = models.CharField(max_length=255, null=True)
     volunteers = models.ManyToManyField(User, through='VolunteerBase', related_name="volunteers")
     moderator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="location_moderator")
-    slug = models.SlugField(unique=True)
-    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True)
-    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True)
-    localities = models.ManyToManyField(Locality, related_name="locations")
+    slug = models.SlugField(unique=True, blank=True)
+    latitude = models.DecimalField(max_digits=18, decimal_places=15, null=True)
+    longitude = models.DecimalField(max_digits=18, decimal_places=15, null=True)
     public = models.BooleanField(default=True)
 
     def __repr__(self):
         return self.name
 
 
-# TODO : Gérer les appels à GeoAPI via l'api et une authentification. https://www.django-rest-framework.org/api-guide/authentication/
 class Status(models.Model):
     """
     Status represent an activity running in a location
